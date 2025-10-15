@@ -41,9 +41,9 @@ Once the script is configured, you can start the process.
 1.  Tell the Gemini agent to run the script. For example: "run the script" or "process the next batch".
 2.  The agent will execute the following command:
     ```bash
-    python3 process_bounces.py
+    python3 runner.py
     ```
-3.  The script will connect to your email, fetch the next batch of **new** emails, ignoring DMARC reports, and print their content to the agent's console.
+3.  The `runner.py` script will then execute `process_bounces.py` to fetch a single batch of **new** emails, ignoring DMARC reports, and print their content to the agent's console.
 
 ### Step 3: Analysis and CSV Export
 
@@ -56,7 +56,7 @@ This part is performed by the Gemini agent after the script runs.
 
 ### Step 4: Iteration
 
-The process is designed to be run repeatedly. After each batch is successfully processed and saved, the agent will ask for your permission to proceed with the next one. You can continue this loop for as many batches as you need.
+The process is designed to be run repeatedly in an interactive manner. After each batch is successfully processed and saved, the agent will ask for your permission to proceed with the next one. You can continue this loop for as many batches as you need. To process the next batch, simply instruct the agent to "run the script again" or "process the next batch".
 
 ## 4. Source Code
 
