@@ -1,0 +1,115 @@
+email id of receipient,bounce reason,error code,date of bounce email receievd
+,,,
+mangesh@urbanblueprint.co.in,Host or domain name not found.,,5/7/2025 9:54
+dash@kecrpg.com,The email account that you tried to reach does not exist.,550-5.1.1,5/7/2025 10:26
+aadityagotmare@rathi.com,Recipient address rejected: Access denied.,550 5.4.1,5/7/2025 11:11
+nitin.tandon@apraava.com,A custom mail flow rule created by an admin at clpindia.onmicrosoft.com has blocked your message.,550 5.7.1,5/7/2025 11:37
+suresh.tfeb14@gmail.com,The recipient's inbox is out of storage space.,452-4.2.2,5/7/2025 12:12
+akshayjakhete@hotmail.com,The recipient's mailbox is full and can't accept messages now.,554 5.2.2,5/7/2025 12:33
+john.7050kabraestate@gmail.com,The recipient's inbox is out of storage space.,452-4.2.2,5/7/2025 16:11
+hayne.fernandes@gmail.com,The recipient's inbox is out of storage space.,452-4.2.2,5/7/2025 17:12
+hkakde@hpcl.in,Host or domain name not found.,,5/7/2025 17:32
+ksdeepak@hpcl.in,Host or domain name not found.,,5/7/2025 19:10
+admin@gemengserv.com,Recipient address rejected: Access denied.,550 5.4.1,5/12/2025 8:31
+divakar.rao@puravankara.com,The recipient's mailbox is full and can't accept messages now.,554 5.2.2,6/4/2025 8:34
+umajag@ant.amazon.com,Recipient not found by SMTP address lookup,550 5.1.10,6/4/2025 8:35
+avik.c@rahee.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 8:35
+rahul.tayade@basf.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 8:40
+pradeep.kavtekar@irclass.org,not authorized to send to recipient because the sender isn't on the recipient's list of senders to accept mail from,550 5.7.129,6/4/2025 8:42
+stra.nagashree@krcl.co.in,User unknown,550 5.1.1,6/4/2025 9:27
+shubhams@tataprojects.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 9:28
+gitesh.shah@runwal.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 9:36
+vilas.jadhav@thermaxglobal.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 9:37
+c_manoj.shrivastava@larsentoubro.com,Recipient not found by SMTP address lookup,550 5.1.10,6/4/2025 9:40
+vikram.dhabale@godrejproperties.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 9:47
+palash.bangur@godrejproperties.com,Recipient not found by SMTP address lookup,550 5.1.10,6/4/2025 9:47
+alok@tataprojects.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 10:01
+abhishek.dutta@godrejproperties.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 10:02
+santoshs@tataprojects.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 10:04
+gayatri.thakkar@godrejproperties.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 10:09
+amitava.sarkar@godrejproperties.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 10:13
+nileshgangadharrao@tataprojects.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 10:14
+gaurav.sood@sbicapventures.com,The recipient's mailbox is full and can't accept messages now.,554 5.2.2,6/4/2025 10:15
+pinaz.mantri@runwal.com,Recipient not found by SMTP address lookup,550 5.1.10,6/4/2025 10:23
+bijankishore.mallick@adani.com,Hop count exceeded - possible mail loop,554 5.4.14,6/4/2025 10:26
+nandakumar.j@chalethotels.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 10:35
+apurv.patil@mograrealty.com,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 10:37
+je.shivanand@krcl.co.in,User unknown,550 5.1.1,6/4/2025 10:39
+rajeshjha@tatatrusts.org,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 10:48
+santosh.kadam@aorealty.com,Disabled recipient address,525 5.7.13,6/4/2025 11:08
+mamidalavenkata.yoganand@gmrgroup.in,Recipient address rejected: Access denied.,550 5.4.1,6/4/2025 11:24
+rsun@zmail.iitm.ac.in,zmail.iitm.ac.in,,6/4/2025 11:27
+suresh.karki@hccindia.com,Your message is too large to send.,550 5.2.3,6/4/2025 11:36
+amit.chaudhri@jsw.in,Recipient address rejected: Access denied.,550 5.4.1,6/5/2025 4:15
+ashwin@darshanam.co.in,Recipient address rejected: Requested mail action aborted: exceeded storage allocation,522 5.7.1,6/5/2025 5:02
+mallikarjun@shriramproperties.com,Security or policy settings at shriramproperties.com have rejected your message.,550 5.7.1,6/5/2025 5:11
+ajay.pathania@anantrajglobal.com,Recipient address rejected: Access denied.,550 5.4.1,6/5/2025 5:51
+nagaraj@august.in,Recipient address rejected: User unknown in virtual alias table,550-5.1.1,6/5/2025 5:55
+vikram@indialand.net,Recipient address rejected: Access denied.,550 5.4.1,6/5/2025 6:20
+bhagyaraj@landcapital.in,The email account that you tried to reach does not exist.,550-5.1.1,6/5/2025 6:35
+mangesh.shende@koltepatil.com,Hop count exceeded - possible mail loop,554 5.4.14,6/5/2025 8:28
+harshala.a@groundholding.com,The email account that you tried to reach does not exist.,550-5.1.1,6/5/2025 8:59
+jyotirmoy.banerjee@safewayconcessions.com,Recipient not found by SMTP address lookup,550 5.1.10,6/5/2025 9:32
+nutan@rajshreebuilders.com,The email account that you tried to reach does not exist.,550-5.1.1,6/5/2025 10:18
+manish.jha@restudios.co.in,User unknown; rejecting,550-'5.1.1,6/5/2025 10:25
+pushpak.shah@restudios.co.in,User unknown; rejecting,550-'5.1.1,6/5/2025 10:25
+b.tajmal5@thepuneet.com,The email account that you tried to reach does not exist.,550-5.1.1,6/5/2025 10:45
+atul.srivastava@slmgbev.com,Recipient address rejected: Access denied,554 5.7.1,6/5/2025 12:40
+drbravanidevelopers@gmail.com,The recipient's inbox is out of storage space.,452-4.2.2,6/5/2025 13:33
+vinaykumarkm06@gmail.com,The recipient's inbox is out of storage space.,452-4.2.2,6/5/2025 15:44
+vinod.gurme@gmail.com,The recipient's inbox is out of storage space.,452-4.2.2,6/5/2025 16:26
+laxman.jain@gmail.com,The recipient's inbox is out of storage space.,452-4.2.2,6/5/2025 16:49
+sandipdesai80@gmail.com,The recipient's inbox is out of storage space.,452-4.2.2,6/5/2025 17:40
+neeraj.saini@mograrealty.com,Recipient address rejected: Access denied.,550 5.4.1,6/6/2025 5:46
+sneha.nambiar@elfaspaces.com,The email account that you tried to reach does not exist.,550-5.1.1,6/6/2025 5:49
+rohit@jagdale.com,Recipient address rejected: jagdale.com,550 5.1.1,6/6/2025 6:00
+anil@godrej.com,User unknown,550 5.1.1,6/6/2025 6:03
+dd@fff.com,User Unknown dd@fff.com,550,6/27/2025 10:30
+s.banerjee@fugro.com,Recipient address rejected: Access denied.,550 5.4.1,7/8/2025 6:04
+satish.gaddam@afcons.com,Recipient address rejected: Access denied.,550 5.4.1,7/8/2025 6:38
+shubham@tataprojects.com,Recipient address rejected: Access denied.,550 5.4.1,7/8/2025 6:58
+santosh.hiray@thermaxglobal.com,Recipient address rejected: Access denied.,550 5.4.1,7/8/2025 7:19
+sachin.jain@panchshil.com,Recipient address rejected: Access denied.,550 5.4.1,7/8/2025 7:22
+rajeshchavan@hexaware.com,Recipient not found by SMTP address lookup,550 5.1.10,7/8/2025 7:22
+shantanu.chakraborty@brookfield.com,Recipient address rejected: Access denied.,550 5.4.1,7/8/2025 7:29
+h.khan@archirodon.net,Recipient address rejected: Access denied.,550-5.4.1,7/8/2025 8:12
+ashish.koul@elevatehomes.co.in,Recipient address rejected: Access denied.,550 5.4.1,7/8/2025 8:21
+mpatil@amiandgroup.com,Recipient address rejected: Access denied.,550 5.4.1,7/8/2025 8:29
+upkar@buildsquare.co.in,The email account that you tried to reach does not exist.,550-5.1.1,7/8/2025 8:33
+mahesh.chhabria@kirloskar.com,Address not found,Unknown,7/8/2025 8:52
+megaprojects11@yahoo.co.uk,This mailbox is disabled (554.30).,554 30,7/8/2025 8:55
+manishkumar.sahu@marathonrealty.com,Unknown,Unknown,7/8/2025 9:49
+info@patrikacards.com,Downstream server error,421,7/8/2025 15:49
+rahul.ggn@hecindiallp.co.in,Recipient not found.,550 5.1.1,7/9/2025 5:23
+pooja.mane@leighton.co.in,Recipient address rejected: Access denied.,5.4.1,7/9/2025 5:28
+anant.chauhan@gera.in,Sender not allowed,550 5.7.134,7/9/2025 7:47
+ashish.ticku@elevatehomes.co.in,Recipient address rejected: Access denied.,550 5.4.1,7/9/2025 7:51
+anurag.pandey@shoppersstop.com,not authorized to send to recipient because the sender isn't on the recipient's list of senders to accept mail from,550 5.7.129,7/9/2025 7:54
+amrutak@sandudevelopers.com,Hop count exceeded - possible mail loop,554 5.4.14,7/9/2025 7:59
+manishmohandas@karleinfra.com,Recipient address rejected: Access denied.,550 5.4.1,7/9/2025 8:00
+ashwin.g@sampathkumarassociates.com,Mail rejected by destination domain,541 5.4.1,7/9/2025 8:15
+mukhtar.ahmed@strongbuilt.in,Recipient not found by SMTP address lookup,550 5.1.10,7/9/2025 8:17
+jaimin.mehta@aecom.com,Hop count exceeded - possible mail loop,554 5.4.14,7/9/2025 8:18
+grishma.mehta@yantraindia.com,The email account that you tried to reach does not exist.,550-5.1.1,7/9/2025 8:52
+surendra.dheeman@airengroup.in,The email account that you tried to reach does not exist.,550-5.1.1,7/9/2025 9:12
+abhilash.jain@tatarealty.in,Address rejected.,550 #5.1.0,7/9/2025 9:30
+prem@mjrbuiders.in,Host or domain name not found.,Unknown,7/9/2025 9:31
+praful.p@siddhagroup.com,Recipient address rejected: Access denied.,550 5.4.1,7/9/2025 9:34
+engg@sagarproperties.com,Downstream server error,421,7/9/2025 10:56
+prashanth.bs@puravankar.com,Downstream server error,421,7/9/2025 16:10
+christopher.gomes@mograrealty.com,Not a bounce,N/A,8/1/2025 7:04
+Berinder.Sahni@sbicapventures.com,Recipient not found by SMTP address lookup,550 5.1.10,8/1/2025 7:08
+prasad.uchgaonkar@runwal.com,Recipient not found by SMTP address lookup,550 5.1.10,8/1/2025 7:09
+shankara@tataprojects.com,Recipient address rejected: Access denied.,550 5.4.1,8/1/2025 7:24
+vikas.singhal@godrejproperties.com,Recipient not found by SMTP address lookup,550 5.1.10,8/1/2025 7:26
+bagawadep@toyoindia.com,Recipient address rejected: User unknown in local recipient table,550 5.1.1,8/1/2025 8:19
+manoj@bmm.in,The email account that you tried to reach is inactive.,550-5.2.1,8/1/2025 8:25
+dycehq@konkanrailways.com,Downstream server error,421,8/1/2025 13:34
+ahmad@pertamina.com,Address rejected.,550 #5.1.0,8/1/2025 14:23
+charu@bhatnagars.co.in,The email account that you tried to reach does not exist.,550-5.1.1,8/1/2025 14:47
+it@groundholding.com,The email account that you tried to reach does not exist.,550-5.1.1,8/1/2025 16:03
+bhavya.sharma@pispl.in,Address rejected.,550 #5.1.0,8/1/2025 16:16
+ashif.javed@kltconstruction.in,Recipient address rejected: Access denied.,550 5.4.1,8/1/2025 20:33
+sachin.agrawal@mograrealty.com,Recipient address rejected: Access denied.,550 5.4.1,8/1/2025 21:36
+dinesh.rajendran@expleogroup.com,Recipient not found by SMTP address lookup,550 5.1.10,8/1/2025 22:10
+susanta@triumphcorporate.com,Downstream server error,421,8/2/2025 2:58
