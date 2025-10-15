@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Confirmation - GEM Engserv</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 300;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .message {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .message p {
+            margin: 0 0 15px 0;
+            color: #555;
+            font-size: 16px;
+        }
+        .signature {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+        }
+        .signature-name {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .signature-title {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .contact-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .contact-info div {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        .contact-icon {
+            margin-right: 10px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .phone {
+            color: #27ae60;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .email {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .email:hover, .phone:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+        .field-placeholder {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+            color: #856404;
+        }
+        .assistance-note {
+            background-color: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Registration Confirmation</h1>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">
+                Dear <span class="field-placeholder">[field id="care_name"]</span>,
+            </div>
+            
+            <div class="message">
+                <p>We have received your registration request.</p>
+                <p>Our coordinator will reach out to you further for confirming your registration.</p>
+            </div>
+            
+            <p><strong>Thank You</strong></p>
+            
+            <div class="signature">
+                <div class="signature-name">Shobhit Singh</div>
+                <div class="signature-title">Sourcing Manager | ISOI WORLD </div>
+                
+                <div class="contact-info">
+                    <div>
+                        <span class="contact-icon">📱</span>
+                        <a href="tel:+9769004519" class="phone">+91 97690 04519</a>
+                    </div>
+                    <div>
+                        <span class="contact-icon">✉️</span>
+                        Write to us at: <a href="mailto:shobhit.singh@isoi.world" class="email">shobhit.singh@isoi.world</a>
+                    </div>
+                </div>
+                
+                <div class="assistance-note">
+                    For any assistance on payment/any other queries please connect with <a href="mailto:chandrakant.s@gemengserv.com" class="email">chandrakant.s@gemengserv.com</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2025 GEM Engserv. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
