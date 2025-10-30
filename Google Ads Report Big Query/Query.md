@@ -1,4 +1,4 @@
---------------------- *** FOR KEYWORD data to big query *** ----------------------
+--------------------- *** FOR KEYWORD data to big query (have filter on "keywords" and put efforts to analyse performance) *** ----------------------
 // Use gemini cli and do this: Upload google ads keywords csv data to big query to create table
 
 bq load \
@@ -51,7 +51,7 @@ FROM (
 ----------------------
 
 
---------------------- *** FOR Search terms data to big query *** ----------------------
+--------------------- *** FOR Search terms data to big query (have filter of "search term" and do efforts to find right keywords) *** ----------------------
 
 // go to shell.cloud.google.com and click on top right `>_`.  Then upload csv in explorer. Then do gcloud auth login in shell. Then paste this line to create table.
 
@@ -90,5 +90,6 @@ FROM
   `feisty-outrider-471302-k6.advanced_csv_analysis.search_terms_report`
 
 ----------------------
+
 
 
