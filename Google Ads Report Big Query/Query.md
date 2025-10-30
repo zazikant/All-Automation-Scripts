@@ -1,7 +1,5 @@
 
-
-
-// Upload google ads keywords csv data to big query to create table
+// Use gemini cli and do this: Upload google ads keywords csv data to big query to create table
 
 bq load \
     --source_format=CSV \
@@ -51,4 +49,5 @@ FROM (
     SAFE_CAST(REPLACE(Cost_per_conv, ',', '') AS FLOAT64) AS Cost_per_conv_numeric
   FROM
     `feisty-outrider-471302-k6.advanced_csv_analysis.search_keyword_report`
+
 )
