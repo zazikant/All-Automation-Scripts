@@ -51,6 +51,8 @@ FROM (
 
 )
 
+TO remove previous data source, go to Resource - Manage added data sources - remove top one.
+
 ----------------------
 
 
@@ -93,6 +95,7 @@ FROM
   `feisty-outrider-471302-k6.advanced_csv_analysis.search_terms_report`
 
 ----------------------
+
 
 
 
