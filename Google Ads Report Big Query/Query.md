@@ -8,7 +8,7 @@ bq load \
     --source_format=CSV \
     --skip_leading_rows=3 \
     feisty-outrider-471302-k6:advanced_csv_analysis.search_keyword_report \
-    "/home/zazikant/Search keyword report.csv" \
+    "/home/shashikantzarekar/Search keyword report.csv" \
     Keyword_status:STRING,Keyword:STRING,Match_type:STRING,Campaign:STRING,Ad_group:STRING,Status:STRING,Status_reasons:STRING,Currency_code:STRING,Max_CPC:STRING,Final_URL:STRING,Avg_CPM:STRING,Interactions:STRING,Interaction_rate:STRING,Avg_cost:STRING,Cost:STRING,Impr:STRING,Clicks:STRING,Conv_rate:STRING,Conversions:STRING,Avg_CPC_1:STRING,Cost_per_conv:STRING
 
 
@@ -62,7 +62,7 @@ bq load \
     --source_format=CSV \
     --skip_leading_rows=3 \
     feisty-outrider-471302-k6:advanced_csv_analysis.search_terms_report \
-    "/home/zazikant/Search terms report.csv" \
+    "/home/shashikantzarekar/Search terms report.csv" \
     Search_term:STRING,Match_type:STRING,Added_Excluded:STRING,Campaign:STRING,Ad_group:STRING,Keyword:STRING,Currency_code:STRING,Avg_CPM:STRING,Impr:STRING,Interactions:STRING,Interaction_rate:STRING,Avg_cost:STRING,Cost:STRING,Campaign_type:STRING,Conv_rate:STRING,Conversions:STRING,Cost_per_conv:STRING
 
 
@@ -93,6 +93,7 @@ FROM
   `feisty-outrider-471302-k6.advanced_csv_analysis.search_terms_report`
 
 ----------------------
+
 
 
 
