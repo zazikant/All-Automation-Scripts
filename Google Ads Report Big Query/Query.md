@@ -1,8 +1,8 @@
 
-Inside looker studio , TO change the "source" of data in Big Query, go to Page > Current Page settings > on right select data source.
+Inside looker studio (zazikant@gmail.com) , TO change the "source" of data in Big Query, go to Page > Current Page settings > on right select data source.
 
 --------------------- *** FOR KEYWORD data to big query (have filter on "keywords" and put efforts to analyse performance) *** ----------------------
-// Use gemini cli and do this: Upload google ads keywords csv data to big query to create table
+// Use gemini cli (shashikantzarekar@gmail.com  gcloud projects list and gcloud config set project feisty-outrider-471302-k6) and do this: Upload google ads keywords csv data to big query to create table
 
 bq load \
     --source_format=CSV \
@@ -93,6 +93,7 @@ FROM
   `feisty-outrider-471302-k6.advanced_csv_analysis.search_terms_report`
 
 ----------------------
+
 
 
 
