@@ -158,6 +158,83 @@ def send_whatsapp_message_with_session(phone_number, message, session_path="what
             return False
 
 
+def send_whatsapp_image(phone_number, image_path, caption=""):
+    """
+    Send an image via WhatsApp using Playwright.
+    
+    Args:
+        phone_number: Full phone number with country code (e.g., +919876543210)
+        image_path: Path to the image file
+        caption: Optional caption for the image
+    """
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        
+        print("Opening WhatsApp Web...")
+        page.goto("https://web.whatsapp.com")
+        
+        try:
+            page.wait_for_selector('[data-testid="chat-list-search"]', timeout=60000)
+            print("Logged in!")
+        except:
+            print("Please scan QR code to login...")
+            try:
+                page.wait_for_selector('[data-testid="chat-list-search"]', timeout=60000)
+                print("QR code scanned!")
+            except:
+                print("Timeout waiting for QR scan")
+                browser.close()
+                return False
+        
+        # Navigate to the chat
+        url = f"https://web.whatsapp.com/send?phone={phone_number}"
+        print(f"Opening chat for {phone_number}...")
+        page.goto(url)
+        
+        try:
+            page.wait_for_selector('[data-testid="conversation-compose-box-input"]', timeout=30000)
+            print("Chat opened!")
+        except:
+            print(f"Could not find chat for {phone_number}")
+            browser.close()
+            return False
+        
+        # Click attach button
+        try:
+            page.click('[data-testid="conversation-attachment-button"]')
+            time.sleep(1)
+        except:
+            print("Could not find attach button")
+            browser.close()
+            return False
+        
+        # Click "Photos & videos"
+        try:
+            page.click('input[type="file"]', force=True)
+            # Use setInputFiles to upload
+            page.locator('input[type="file"]').set_input_files(image_path)
+            time.sleep(2)
+        except Exception as e:
+            print(f"Could not upload file: {e}")
+            browser.close()
+            return False
+        
+        # Click send button
+        try:
+            page.wait_for_selector('[data-testid="send"]', timeout=10000)
+            page.click('[data-testid="send"]')
+            print(f"✅ Image sent to {phone_number}")
+            time.sleep(2)
+            browser.close()
+            return True
+        except Exception as e:
+            print(f"Could not send: {e}")
+            browser.close()
+            return False
+
+
 if __name__ == "__main__":
     import sys
     
@@ -168,6 +245,12 @@ if __name__ == "__main__":
         target = sys.argv[1]
         msg = sys.argv[2]
         send_whatsapp_message(target, msg, headless=False)
+    elif len(sys.argv) > 1 and sys.argv[1] == "--image":
+        # Image sending: python send_whatsapp_playwright.py --image +91XXXXXXXXXX /path/to/image.jpg "caption"
+        target = sys.argv[2]
+        image_path = sys.argv[3]
+        caption = sys.argv[4] if len(sys.argv) > 4 else ""
+        send_whatsapp_image(target, image_path, caption)
     else:
         # Default usage
         print("WhatsApp Message Sender (Playwright)")
@@ -175,3 +258,6 @@ if __name__ == "__main__":
         
         # Example: Send to self
         send_whatsapp_message(MY_NUMBER, "Hello from Playwright! This is a test message.")
+        
+        # Example: Send image
+        # send_whatsapp_image(MY_NUMBER, "/home/zazikant/safety management.jpg", "Safety Management")

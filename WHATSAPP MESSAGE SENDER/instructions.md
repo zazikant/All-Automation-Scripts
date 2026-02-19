@@ -68,6 +68,7 @@ I'll:
 - WhatsApp Web session persists - no need to login every time
 - Browser must stay open for session to work
 - For sending images, provide the file path
+- **To send images**: Use Playwright MCP - click attach → Photos & videos → upload file → send
 
 ---
 
