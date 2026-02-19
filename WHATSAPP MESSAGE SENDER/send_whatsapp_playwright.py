@@ -23,7 +23,7 @@ import csv
 import json
 import re
 from datetime import datetime
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Any
 from pathlib import Path
 
 # Configuration
@@ -54,9 +54,9 @@ class WhatsAppSender:
         self.headless = headless
         self.browser: Optional[Browser] = None
         self.context: Optional[BrowserContext] = None
-        self.page: Optional[Page] = None
+        self.page: Optional[Page] = None  # Will be set in start()
         self.is_logged_in = False
-        self.playwright = None
+        self.playwright: Optional[Any] = None
         
     def _ensure_session_dir(self):
         """Create session directory if it doesn't exist."""
@@ -76,9 +76,12 @@ class WhatsAppSender:
             )
             
             # Create context with storage state persistence
+            if self.browser is None:
+                raise RuntimeError("Browser failed to launch")
             storage_state_path = f"{SESSION_DIR}/storage_state.json"
+            initial_storage = storage_state_path if os.path.exists(storage_state_path) else None
             self.context = self.browser.new_context(
-                storage_state=storage_state_path if os.path.exists(storage_state_path) else None,
+                storage_state=initial_storage,
                 viewport={'width': 1280, 'height': 800}
             )
             
@@ -108,19 +111,25 @@ class WhatsAppSender:
     
     def _check_login_status(self) -> bool:
         """Quick check if already logged in."""
+        page = self.page
+        if page is None:
+            return False
         try:
-            self.page.goto("https://web.whatsapp.com")
+            page.goto("https://web.whatsapp.com")
             # Try to find chat list quickly
-            self.page.wait_for_selector('[data-testid="chat-list-search"]', timeout=8000)
+            page.wait_for_selector('[data-testid="chat-list-search"]', timeout=8000)
             return True
         except:
             return False
     
     def _wait_for_login(self, timeout: int = 120) -> bool:
         """Wait for user to scan QR code."""
+        page = self.page
+        if page is None:
+            return False
         try:
             print("⏳ Waiting for QR scan... (timeout: {}s)".format(timeout))
-            self.page.wait_for_selector('[data-testid="chat-list-search"]', timeout=timeout * 1000)
+            page.wait_for_selector('[data-testid="chat-list-search"]', timeout=timeout * 1000)
             print("✅ QR code scanned!")
             return True
         except:
@@ -129,16 +138,19 @@ class WhatsAppSender:
     
     def _save_session(self):
         """Save browser session for next time."""
+        ctx = self.context
+        if ctx is None:
+            return
         try:
             storage_path = f"{SESSION_DIR}/storage_state.json"
-            self.context.storage_state(path=storage_path)
+            ctx.storage_state(path=storage_path)
             print("💾 Session saved for next time")
         except Exception as e:
             print(f"⚠️ Could not save session: {e}")
     
     def stop(self):
         """Stop browser and save session."""
-        if self.is_logged_in and self.context:
+        if self.is_logged_in:
             self._save_session()
         
         if self.browser:
@@ -175,10 +187,11 @@ class WhatsAppSender:
             return CONTACT_CACHE[last_10]
         
         # Auto-detect from chat if requested
-        if auto_detect and self.page:
+        if auto_detect and self.page is not None:
+            page = self.page
             try:
                 # Try to get name from chat header
-                header = self.page.locator('header span[title], [data-testid="conversation-header-title"]').first
+                header = page.locator('header span[title], [data-testid="conversation-header-title"]').first
                 if header.count() > 0:
                     name = header.inner_text()
                     if name and len(name) > 0:
@@ -193,6 +206,9 @@ class WhatsAppSender:
     
     def _wait_for_chat_load(self, timeout: int = 15) -> bool:
         """Wait for chat to fully load."""
+        page = self.page
+        if page is None:
+            return False
         try:
             # Multiple selector strategies
             selectors = [
@@ -203,7 +219,7 @@ class WhatsAppSender:
             
             for selector in selectors:
                 try:
-                    self.page.wait_for_selector(selector, timeout=timeout * 1000)
+                    page.wait_for_selector(selector, timeout=timeout * 1000)
                     return True
                 except:
                     continue
@@ -214,11 +230,15 @@ class WhatsAppSender:
     
     def _click_send(self) -> bool:
         """Click send button with multiple fallback strategies."""
+        page = self.page
+        if page is None:
+            return False
+        
         strategies = [
-            lambda: self.page.locator('[data-testid="send"]').click(),
-            lambda: self.page.locator('button[aria-label*="Send"]').click(),
-            lambda: self.page.keyboard.press("Enter"),
-            lambda: self.page.locator('span[data-icon="send"]').click(),
+            lambda: page.locator('[data-testid="send"]').click(),
+            lambda: page.locator('button[aria-label*="Send"]').click(),
+            lambda: page.keyboard.press("Enter"),
+            lambda: page.locator('span[data-icon="send"]').click(),
         ]
         
         for i, strategy in enumerate(strategies):
@@ -241,7 +261,8 @@ class WhatsAppSender:
         Returns:
             (success: bool, contact_name: str)
         """
-        if not self.is_logged_in or not self.page:
+        page = self.page
+        if page is None or not self.is_logged_in:
             print("❌ Not logged in!")
             return False, phone
         
@@ -253,7 +274,7 @@ class WhatsAppSender:
             url = f"https://web.whatsapp.com/send?phone={full_phone}&text={encoded_msg}"
             
             print(f"📱 Opening chat for {full_phone}...")
-            self.page.goto(url)
+            page.goto(url)
             
             # Wait for chat to load
             if not self._wait_for_chat_load(timeout=15):
@@ -285,7 +306,8 @@ class WhatsAppSender:
         Returns:
             (success: bool, contact_name: str)
         """
-        if not self.is_logged_in or not self.page:
+        page = self.page
+        if page is None or not self.is_logged_in:
             print("❌ Not logged in!")
             return False, phone
         
@@ -299,7 +321,7 @@ class WhatsAppSender:
             # Open chat
             url = f"https://web.whatsapp.com/send?phone={full_phone}"
             print(f"📱 Opening chat for {full_phone}...")
-            self.page.goto(url)
+            page.goto(url)
             
             if not self._wait_for_chat_load(timeout=15):
                 print(f"❌ Chat did not load")
@@ -320,7 +342,7 @@ class WhatsAppSender:
             
             for selector in attach_selectors:
                 try:
-                    self.page.locator(selector).first.click()
+                    page.locator(selector).first.click()
                     attach_clicked = True
                     time.sleep(0.5)
                     break
@@ -334,12 +356,12 @@ class WhatsAppSender:
             # Click "Photos & videos" menu (IMPORTANT: not "Document")
             print("🖼️ Clicking Photos & videos...")
             try:
-                self.page.click('text=Photos & videos', timeout=5000)
+                page.click('text=Photos & videos', timeout=5000)
                 time.sleep(0.5)
             except:
                 # Try alternative selectors
                 try:
-                    self.page.locator('button:has-text("Photos")').first.click()
+                    page.locator('button:has-text("Photos")').first.click()
                 except:
                     print("❌ Could not find Photos & videos option")
                     return False, contact_name
@@ -347,7 +369,7 @@ class WhatsAppSender:
             # Upload file
             print(f"📤 Uploading {os.path.basename(image_path)}...")
             try:
-                file_input = self.page.locator('input[type="file"]').first
+                file_input = page.locator('input[type="file"]').first
                 file_input.set_input_files(image_path)
                 time.sleep(2)  # Wait for preview to load
             except Exception as e:
@@ -367,7 +389,7 @@ class WhatsAppSender:
                     
                     for selector in caption_selectors:
                         try:
-                            caption_box = self.page.locator(selector).first
+                            caption_box = page.locator(selector).first
                             if caption_box.count() > 0:
                                 caption_box.fill(caption)
                                 time.sleep(0.5)
@@ -389,7 +411,7 @@ class WhatsAppSender:
                 
                 for selector in send_selectors:
                     try:
-                        self.page.locator(selector).first.click()
+                        page.locator(selector).first.click()
                         print(f"✅ Image sent to {contact_name}")
                         
                         # Log
@@ -448,7 +470,8 @@ class WhatsAppSender:
     
     def check_replies(self) -> List[Dict]:
         """Check for new replies from contacts."""
-        if not self.page:
+        page = self.page
+        if page is None:
             return []
             
         last_ids = load_last_message_ids()
@@ -456,7 +479,7 @@ class WhatsAppSender:
         
         try:
             # Get chat list
-            chat_rows = self.page.locator('[data-testid="chat-list"] > div > div').all()
+            chat_rows = page.locator('[data-testid="chat-list"] > div > div').all()
             print(f"🔍 Checking {len(chat_rows)} chats...")
             
             for row in chat_rows[:20]:  # Check first 20 chats
@@ -473,7 +496,7 @@ class WhatsAppSender:
                     time.sleep(1)
                     
                     # Get messages
-                    msgs = self.page.locator('[data-testid="msg-container"], div[data-id]').all()
+                    msgs = page.locator('[data-testid="msg-container"], div[data-id]').all()
                     if not msgs:
                         continue
                     
