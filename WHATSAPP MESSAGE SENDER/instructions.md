@@ -1,4 +1,4 @@
-# WhatsApp Message Sender - Instructions (Enhanced v2.1)
+# WhatsApp Message Sender - Instructions (Enhanced v2.5 - VERIFIED WORKING)
 
 ## Summary
 
@@ -78,6 +78,26 @@ If using manual Playwright MCP:
 2. **Click "Back" button** to exit chat to list ← CRITICAL STEP!
 3. Wait a moment
 4. Re-enter chat to check for replies
+
+### ⚠️ CRITICAL: Capture ALL Replies, Not Just First/Last!
+When checking for replies:
+- **Chat list preview only shows the MOST RECENT message** (e.g., "Wow")
+- The contact may have sent MULTIPLE replies (e.g., "Thanks" + "This is informative" + "Wow")
+- **You MUST open the chat** to see ALL messages in the conversation
+- Concatenate all replies with ` + ` separator
+
+**Example of CORRECT reply capture:**
+```
+Chat list shows: "Shashikant Home: Wow"
+But when you OPEN the chat, you see:
+  - "Thanks" (06:57)
+  - "This is informative" (06:57)  
+  - "Wow" (06:58)
+
+CSV should contain: "Thanks + This is informative + Wow"
+```
+
+**Never trust the chat list preview alone for replies!**
 
 ---
 
@@ -521,9 +541,35 @@ Me: ✅ Sent to Shashikant Home: Hello
 
 ---
 
+## 📋 Quick Reference: Sending Images
+
+### Option 1: Python Script (Easiest)
+```bash
+python send_whatsapp_playwright.py --image "+919869101909" "/path/to/image.jpg" "optional caption"
+```
+The script handles everything automatically.
+
+### Option 2: MCP Playwright (Manual)
+1. Navigate to chat
+2. Click attach button (paperclip)
+3. Click "Photos & videos"
+4. **Use `playwright_browser_file_upload` tool** (NOT JavaScript setInputFiles!)
+5. Type caption
+6. Click Send
+7. Press Escape to exit chat
+
+### Why browser_file_upload works:
+- JavaScript's `setInputFiles()` fails silently in MCP browser context
+- Python's `set_input_files()` works (different runtime)
+- The file upload tool properly handles the native file chooser dialog
+
+---
+
 ## Version History
 
-- **v2.4** (Current): Added MCP file upload tool for images - THE WORKING METHOD!
+- **v2.6** (Current): Added critical note - capture ALL replies by opening chat, not just from chat list preview
+- **v2.5**: Verified working - use `playwright_browser_file_upload` tool for MCP, Python script uses `set_input_files()`
+- **v2.4**: Added MCP file upload tool for images - THE WORKING METHOD!
 - **v2.3**: Improved code execution reliability + added image sending with caption
 - **v2.2**: Added code execution via run_code - Much faster than snapshots!
 - **v2.1**: Added exit_chat after sending - Critical for reply capture!

@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-WhatsApp Message Sender using Playwright - OPTIMIZED VERSION 2.1
+WhatsApp Message Sender using Playwright - OPTIMIZED VERSION 2.2
 Enhanced for speed and reliability with persistent sessions and contact caching
 
 Features:
 - Persistent browser sessions (no repeated QR scans)
-- Contact cache for instant lookups
+- Contact cache for instant lookup
 - Fast URL-based navigation
 - Batch operations with single browser instance
 - Smart retry logic with fallback selectors
 - Auto-contact name detection
 - Proper image sending (as photo, not sticker)
 
-NOTE: For MCP Playwright (not Python), use browser_file_upload tool instead of 
-setInputFiles() - JavaScript's setInputFiles doesn't work in MCP browser context!
+NOTE: For MCP Playwright, use browser_file_upload tool instead of setInputFiles()!
+      Python's set_input_files() works fine in the Python script context.
 
 Author: Enhanced by Claude
-Version: 2.1
+Version: 2.2
 """
 
 from playwright.sync_api import sync_playwright, Page, Browser, BrowserContext
