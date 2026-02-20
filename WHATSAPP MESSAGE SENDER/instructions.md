@@ -68,11 +68,11 @@ Wrong CSV entry:   I will look into it  ← MISSED "Thanks"!
 ## ⚠️ CRITICAL: Phone Number Format for Searching Contacts
 
 ### The Rule:
-When user gives a number like `9869101909` or `8976167591` → Always convert to `+91` prefix:
-- `9869101909` → search for `+919869101909` (or just `9869101909` works too)
-- `8976167591` → search for `+918976167591`
+When user gives a number like `9869101909` or `8976167591` → Just search with that exact number:
+- `9869101909` → search for `9869101909` (WhatsApp matches +91, 0, etc.)
+- `8976167591` → search for `8976167591`
 
-WhatsApp stores contacts with country codes, so adding `+91` (India) makes search faster and more accurate.
+WhatsApp's search is smart - it matches partial numbers against stored contacts regardless of format (+91, 0, spaces, etc.). No need to add prefixes!
 
 ---
 
