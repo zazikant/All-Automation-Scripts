@@ -47,37 +47,39 @@ python send_whatsapp_playwright.py --keep-alive
 
 **This is the MOST IMPORTANT step - never skip!**
 
-### Why?
-- WhatsApp Web shows unread count in header (e.g., "42 unread messages")
-- Before sending to ANY new contact, you MUST check for unread messages from ALL contacts first
-- This ensures replies are captured BEFORE new messages are sent
+### Simple Programmatic Approach:
 
-### ✅ CORRECT Process (ALWAYS):
-1. **Check for UNREAD messages** - Get all chats with unread indicators
-2. **Map them to CSV** - Capture ALL replies from unread chats
-3. **Then send** - Proceed with sending new messages
+1. **Get all unread chat names** from chat list (look for "X unread messages" text)
+2. **Filter by CSV** - Only check contacts we've sent messages to
+3. **Open each matching chat** - Capture the reply
+4. **Update CSV** - Map reply to correct entry
+5. **Exit chat** - Go back to chat list
+6. **Then send** - Proceed with sending new messages
 
-### Programmatic Check (MCP Code Execution)
-```javascript
-playwright_browser_run_code:
-  code: |
-    async (page) => {
-      // First: Check for ALL unread chats
-      await page.goto("https://web.whatsapp.com/");
-      await page.waitForTimeout(2000);
-      
-      // Get all chat rows
-      const chatRows = await page.$$('[role="row"]');
-      const unreadChats = [];
-      
-      for (const row of chatRows) {
-        // Check for unread indicator (span with "unread" in class or message count)
-        const unreadBadge = await row.$('span[class*="cx"], span[aria-label*="unread"]');
-        const nameEl = await row.$('span[class*="title"], span[title]');
-        
-        if (unreadBadge && nameEl) {
-          const name = await nameEl.innerText();
-          const unreadText = await unreadBadge.innerText();
+### Step-by-Step:
+
+**Step 1: Read CSV to get contacts we've sent to**
+```
+Contacts in CSV: Shashikant Home, Jaideep Singh BD GEM, Purva (+919820937483), Chandrakant Shivadekar GEM
+```
+
+**Step 2: Get all unread chats from chat list**
+- Look at chat list - find rows with "X unread message(s)" text
+- Extract contact names from those rows
+
+**Step 3: Filter and process**
+- Compare unread names with CSV contacts
+- For matching contacts: open chat → get reply → update CSV → exit
+
+**Step 4: Send new message**
+
+### Quick Manual Check (When I have browser session):
+1. Take snapshot of chat list
+2. Look for "unread" text in each row
+3. Extract contact name
+4. If name in CSV → open chat → capture reply → update CSV → exit
+5. Repeat for all unread contacts
+6. Then proceed with sending
           if (name && unreadText && !isNaN(parseInt(unreadText))) {
             unreadChats.push(name);
           }
@@ -623,7 +625,8 @@ The script handles everything automatically.
 
 ## Version History
 
-- **v2.7** (Current): Added critical section - ALWAYS check for unread messages BEFORE sending to any contact (programmatic approach)
+- **v2.8** (Current): Simplified unread check workflow - check chat list for unread → filter by CSV → open & capture → update CSV
+- **v2.7**: Added critical section - ALWAYS check for unread messages BEFORE sending to any contact (programmatic approach)
 - **v2.6**: Added critical note - capture ALL replies by opening chat, not just from chat list preview
 - **v2.5**: Verified working - use `playwright_browser_file_upload` tool for MCP, Python script uses `set_input_files()`
 - **v2.4**: Added MCP file upload tool for images - THE WORKING METHOD!
