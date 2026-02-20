@@ -1,4 +1,4 @@
-# WhatsApp Message Sender - Instructions (Enhanced v2.0)
+# WhatsApp Message Sender - Instructions (Enhanced v2.1)
 
 ## Summary
 
@@ -9,6 +9,7 @@
 - **Reliable selectors** - Multiple fallback strategies
 - **Batch operations** - Single browser instance for multiple sends
 - **Smart retry logic** - Auto-retry on failures
+- **Exit chat after send** - Critical for capturing replies!
 
 ---
 
@@ -39,6 +40,44 @@ python send_whatsapp_playwright.py --check-replies
 # Keep session alive for faster subsequent sends
 python send_whatsapp_playwright.py --keep-alive
 ```
+
+---
+
+## ⚠️ CRITICAL: Exit Chat After Sending
+
+**This is the MOST IMPORTANT step for capturing replies!**
+
+### Why?
+- WhatsApp Web doesn't always show new messages in real-time when you're already inside a chat
+- If you stay in the chat after sending, you might miss replies
+- **2 back-to-back replies will be missed** if you don't exit and re-enter
+
+### ✅ CORRECT Process:
+1. **Send message** → Log to CSV
+2. **EXIT chat** (go back to chat list) ← **CRITICAL**
+3. Wait for reply
+4. **Re-enter chat** to see new messages properly
+5. Capture reply → Update CSV
+
+### The Script Does This Automatically!
+Use these methods instead:
+```python
+# These methods automatically exit chat after sending:
+sender.send_message_and_exit(phone, message)      # For text
+sender.send_image_and_exit(phone, image_path)     # For images
+
+# The script will:
+# 1. Send the message
+# 2. Exit the chat (go back to chat list)
+# 3. This ensures replies are captured properly
+```
+
+### Via MCP (Manual Steps):
+If using manual Playwright MCP:
+1. Send message
+2. **Click "Back" button** to exit chat to list ← CRITICAL STEP!
+3. Wait a moment
+4. Re-enter chat to check for replies
 
 ---
 
@@ -281,6 +320,7 @@ Me: ✅ Sent to Shashikant Home: Hello
 
 ## Version History
 
-- **v2.0** (Current): Persistent sessions, contact cache, optimized selectors
+- **v2.1** (Current): Added exit_chat after sending - Critical for reply capture!
+- **v2.0**: Persistent sessions, contact cache, optimized selectors
 - **v1.0**: Basic functionality, new browser per send
 

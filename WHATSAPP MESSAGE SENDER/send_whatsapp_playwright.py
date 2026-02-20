@@ -299,6 +299,66 @@ class WhatsAppSender:
             print(f"❌ Error sending to {phone}: {e}")
             return False, phone
     
+    def exit_chat(self) -> bool:
+        """
+        Exit current chat and go back to chat list.
+        This is IMPORTANT for capturing replies properly - WhatsApp Web doesn't 
+        always show new messages in real-time when inside a chat.
+        
+        Returns:
+            success: bool
+        """
+        page = self.page
+        if page is None:
+            return False
+        
+        try:
+            # Try clicking the back button (chevron left) in header
+            back_selectors = [
+                'button[aria-label*="Back"]',
+                'button[title="Back"]', 
+                '[data-testid="btn-back"]',
+                'button[data-testid="back"]',
+                'button[aria-label="Back"]',
+            ]
+            
+            for selector in back_selectors:
+                try:
+                    if page.locator(selector).first.is_visible(timeout=2000):
+                        page.locator(selector).first.click()
+                        time.sleep(0.5)
+                        print("✅ Exited chat to list")
+                        return True
+                except:
+                    continue
+            
+            # Alternative: navigate directly to chat list
+            page.goto("https://web.whatsapp.com/")
+            time.sleep(1)
+            print("✅ Navigated back to chat list")
+            return True
+            
+        except Exception as e:
+            print(f"⚠️ Could not exit chat: {e}")
+            return False
+    
+    def send_message_and_exit(self, phone: str, message: str, auto_name: bool = False) -> Tuple[bool, str]:
+        """
+        Send message and exit chat to ensure replies are captured properly.
+        
+        Process:
+        1. Send message
+        2. Exit chat (go back to chat list) - CRITICAL for reply capture
+        3. This allows WhatsApp to properly track new messages
+        
+        Returns:
+            (success: bool, contact_name: str)
+        """
+        success, name = self.send_message(phone, message, auto_name)
+        if success:
+            self.exit_chat()
+        return success, name
+    
     def send_image(self, phone: str, image_path: str, caption: str = "") -> Tuple[bool, str]:
         """
         Send image as photo (NOT sticker) with optional caption.
@@ -432,6 +492,18 @@ class WhatsAppSender:
         except Exception as e:
             print(f"❌ Error: {e}")
             return False, phone
+
+    def send_image_and_exit(self, phone: str, image_path: str, caption: str = "") -> Tuple[bool, str]:
+        """
+        Send image and exit chat to ensure replies are captured properly.
+        
+        Returns:
+            (success: bool, contact_name: str)
+        """
+        success, name = self.send_image(phone, image_path, caption)
+        if success:
+            self.exit_chat()
+        return success, name
     
     def send_batch(self, phones: List[str], message: str) -> Dict:
         """
