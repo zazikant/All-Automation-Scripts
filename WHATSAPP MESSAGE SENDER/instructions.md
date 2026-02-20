@@ -1,4 +1,24 @@
-# WhatsApp Message Sender - Instructions (Enhanced v2.9 - UNREAD CHECK BEFORE SEND)
+# WhatsApp Message Sender - Instructions (Enhanced v2.14)
+
+══════════════════════════════════════════════════════════════════════════════
+║  ⚠️  VERY IMPORTANT: BEFORE SENDING ANY MESSAGE - ALWAYS CHECK REPLIES FIRST!  ⚠️  ║
+║                                                                              ║
+║  1. Read CSV to see contacts we've sent to                                  ║
+║  2. Check chat list for UNREAD messages from those contacts                 ║
+║  3. Open each chat → capture ALL replies → update CSV                      ║
+║  4. THEN send new message                                                   ║
+║                                                                              ║
+║  FAILURE TO DO THIS = MISSED REPLIES = LOST DATA                           ║
+║  (This actually happened on 2026-02-20 - replies were lost!)               ║
+══════════════════════════════════════════════════════════════════════════════
+
+### What happens if you skip:
+- User sent "Hi" to 9869101909 and 8976167591
+- Both contacts replied ("Hello" and "Kris ka gana sunega")
+- Replies were NOT captured because I didn't check first
+- Had to manually update CSV after the fact
+
+### Don't let this happen again!
 
 ## ⚠️ ⚠️ ⚠️ MANDATORY WORKFLOW - NEVER SKIP!
 
@@ -275,50 +295,81 @@ CSV should contain: "Thanks + This is informative + Wow"
 
 ---
 
-## ⚡ Using Playwright MCP with Code (FASTEST!)
+## ⚡ CORRECT Method to Send Messages (WORKING!)
 
-Instead of slow snapshot-based navigation, use `run_code` to execute JavaScript directly:
-
-### Send Message via Code (Reliable Version)
+### ❌ DON'T USE - URL Method Doesn't Work Reliably
 ```javascript
-playwright_browser_run_code:
-  code: |
-    async (page) => {
-      const phone = "9869101909";
-      const message = "Hello from code execution!";
-      
-      // Navigate with pre-filled message
-      await page.goto(`https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`, { 
-        waitUntil: 'networkidle',
-        timeout: 20000 
-      });
-      
-      // Wait for chat to fully load
-      await page.waitForTimeout(3000);
-      
-      // Check if message was pre-filled, if not type it
-      const inputBox = await page.$('div[contenteditable="true"][data-tab="1"]');
-      if (inputBox) {
-        const currentText = await inputBox.innerText();
-        if (!currentText.includes(message)) {
-          await inputBox.fill(message);
-        }
-      }
-      
-      // Wait a moment then press Enter to send
-      await page.waitForTimeout(500);
-      await page.keyboard.press('Enter');
-      
-      // Wait for message to appear in chat list (confirms sent)
-      await page.waitForTimeout(2000);
-      
-      // Go back to chat list to ensure proper state
-      await page.goto("https://web.whatsapp.com/");
-      await page.waitForTimeout(1000);
-      
-      return "Message sent!";
-    }
+// THIS DOES NOT WORK RELIABLY - AVOID
+await page.goto(`https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`);
 ```
+
+### ✅ CORRECT Method - Click Chat + Type in Input
+
+**Step 1:** Navigate to WhatsApp Web
+```javascript
+await page.goto("https://web.whatsapp.com/");
+await page.waitForTimeout(3000);
+```
+
+**Step 2:** Click on the contact from chat list (find by name in the rows)
+```javascript
+// Click on chat row - contact name appears in the chat list
+await page.click('text=ContactName');  // e.g., 'text=Shashikant Home'
+await page.waitForTimeout(2000);
+```
+
+**Step 3:** Find and fill the message input box (footer contenteditable)
+```javascript
+const inputBox = await page.$('footer div[contenteditable="true"]');
+if (inputBox) {
+  await inputBox.fill('Hi');
+  await page.waitForTimeout(500);
+  await page.keyboard.press('Enter');
+}
+```
+
+**Step 4:** Verify message sent - appears in chat list with timestamp
+```javascript
+await page.waitForTimeout(2000);
+// Message should appear in chat list as "ContactName: Hi 11:56"
+```
+
+### Complete Working Example
+```javascript
+async (page) => {
+  const contactName = "Shashikant Home";  // Name as it appears in chat list
+  const message = "Hi";
+  
+  // Go to WhatsApp
+  await page.goto("https://web.whatsapp.com/");
+  await page.waitForTimeout(3000);
+  
+  // Click on the contact's chat
+  await page.click(`text=${contactName}`);
+  await page.waitForTimeout(2000);
+  
+  // Type message in input box
+  const inputBox = await page.$('footer div[contenteditable="true"]');
+  if (inputBox) {
+    await inputBox.fill(message);
+    await page.waitForTimeout(500);
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(2000);
+  }
+  
+  // Go back to chat list
+  await page.goto("https://web.whatsapp.com/");
+  await page.waitForTimeout(1000);
+  
+  return "Message sent to " + contactName;
+}
+```
+
+### Key Points:
+- ✅ Always click on chat from list first
+- ✅ Use `footer div[contenteditable="true"]` selector for input
+- ✅ Press Enter to send (not click send button)
+- ✅ Verify message appears in chat list after sending
 
 ### Send Image with Caption via Code
 ```javascript
@@ -454,10 +505,16 @@ playwright_browser_run_code:
 
 ---
 
-## Efficient Contact Finding (NEW!)
+## Efficient Contact Finding
 
-### Method 1: Direct Phone Number Mapping (Fastest)
-The script now includes a **contact cache** that maps phone numbers to saved contact names:
+### Method 1: Click on Chat from List (CORRECT & RELIABLE)
+1. Navigate to WhatsApp Web: `https://web.whatsapp.com/`
+2. Wait for chat list to load
+3. Click on the contact name directly from the chat list rows
+4. Type message in input box and press Enter
+
+### Method 2: Contact Cache (Fastest)
+The script includes a **contact cache** that maps phone numbers to saved contact names:
 
 ```python
 CONTACT_CACHE = {
@@ -473,25 +530,11 @@ CONTACT_CACHE = {
 - ✅ Instant chat open
 - ✅ Works even if contact renamed
 
-### Method 2: URL Direct Navigation (Universal)
+### ❌ AVOID: URL Direct Navigation
 ```
 https://web.whatsapp.com/send?phone=+91XXXXXXXXXX&text=YourMessage
 ```
-
-**Pros:**
-- Works for ANY number (saved or unsaved)
-- Opens chat instantly
-- Pre-fills message text
-
-**Cons:**
-- Number must include country code
-
-### Method 3: Search by Name (Fallback)
-If contact is saved but not in cache:
-1. Click "New chat" button
-2. Type name/number in search
-3. Click result
-4. Wait 1-2 seconds
+**Doesn't work reliably** - message appears typed but doesn't send properly.
 
 ---
 
@@ -670,18 +713,19 @@ timestamp,contact,sent_message,reply
 ### Issue: "Message appears typed but doesn't send"
 **Problem:** Using URL pre-fill like `https://web.whatsapp.com/send?phone=...&text=hello` shows the message in the input box but doesn't actually send it.
 
-**Root Cause:**
-1. URL pre-fill only puts text in input box - doesn't auto-send
-2. Initial selector `div[contenteditable="true"][data-tab="1"]` may not work in MCP context
-3. Chat may not be fully opened before typing
+**Root Cause:** URL pre-fill only puts text in input box - it does NOT automatically send. The Enter key press is needed but sometimes fails in MCP context.
 
 **Solution - ALWAYS use this method:**
 ```javascript
-// 1. Click on the chat first to open it fully
-await page.click('text=ContactName');
+// 1. Navigate to WhatsApp first
+await page.goto("https://web.whatsapp.com/");
+await page.waitForTimeout(3000);
+
+// 2. Click on the chat from the list
+await page.click('text=ContactName');  // Use exact name as it appears
 await page.waitForTimeout(2000);
 
-// 2. Use the correct selector (footer contenteditable)
+// 3. Use the correct selector (footer contenteditable)
 const inputBox = await page.$('footer div[contenteditable="true"]');
 if (inputBox) {
   await inputBox.fill('hello');
@@ -689,11 +733,12 @@ if (inputBox) {
   await page.keyboard.press('Enter');
 }
 
-// 3. Verify message appears in chat list with timestamp
+// 4. Verify message appears in chat list with timestamp
 ```
 
 **Key points:**
-- ✅ Click chat first to fully open it
+- ✅ Navigate to WhatsApp first (not directly to send URL)
+- ✅ Click chat from list to open it fully
 - ✅ Use `footer div[contenteditable="true"]` selector (works in MCP)
 - ✅ Always press Enter after filling
 - ✅ Verify message appears in chat list
@@ -810,7 +855,8 @@ If `edit` tool fails with "oldString not found":
 
 ## Version History
 
-- **v2.13** (Current): Added phone number format tip - always add +91 prefix when searching contacts
+- **v2.14** (Current): FIXED - Removed unreliable URL method. Now specify correct method: click chat from list → type in input box → press Enter
+- **v2.13**: Added phone number format tip - always add +91 prefix when searching contacts
 - **v2.12** (Current): Added critical section on capturing ALL replies - must open chat, not just read preview, concatenate all replies with " + "
 - **v2.11** (Current): Added clearer image sending workflow with visual flow + CSV update guide
 - **v2.10**: Made unread check workflow MANDATORY - added prominent warning at top, clarified this is never optional
