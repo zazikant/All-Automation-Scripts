@@ -318,6 +318,30 @@ send_whatsapp_image("+919869101909", "/path/to/image.jpg", "Caption here")
 5. Click **Send**
 6. ✅ Verify chat shows "Photo" (not "Sticker")
 
+### ⚡ THE WORKING MCP IMAGE METHOD (2026-02-20)
+
+**Key Discovery:** JavaScript's `setInputFiles()` doesn't work in MCP browser context. Use the **file upload tool** instead!
+
+**Steps:**
+1. Navigate to chat: `https://web.whatsapp.com/send?phone=NUMBER`
+2. Click **attachment button** (paperclip icon)
+3. Click **"Photos & videos"** menu option
+4. **Wait for file chooser modal** - snapshot shows `[File chooser]: can be handled by browser_file_upload`
+5. Use **browser_file_upload** tool with file path:
+   ```json
+   playwright_browser_file_upload:
+     paths: ["/home/zazikant/image.jpg"]
+   ```
+6. Wait for image preview to load
+7. Type caption in textbox (if needed)
+8. Click **Send** button
+9. **Press Escape** to exit chat back to list (critical for reply capture!)
+
+**Why this works:**
+- `playwright_browser_file_upload` properly handles the native file chooser dialog
+- JavaScript `setInputFiles()` fails silently in MCP context
+- Python script uses `set_input_files()` which works but needs its own session
+
 ### ❌ AVOID (Sends as Sticker)
 - Direct file input without using "Photos & videos" menu
 - Results in low-quality sticker instead of image
@@ -499,7 +523,8 @@ Me: ✅ Sent to Shashikant Home: Hello
 
 ## Version History
 
-- **v2.3** (Current): Improved code execution reliability + added image sending with caption
+- **v2.4** (Current): Added MCP file upload tool for images - THE WORKING METHOD!
+- **v2.3**: Improved code execution reliability + added image sending with caption
 - **v2.2**: Added code execution via run_code - Much faster than snapshots!
 - **v2.1**: Added exit_chat after sending - Critical for reply capture!
 - **v2.0**: Persistent sessions, contact cache, optimized selectors

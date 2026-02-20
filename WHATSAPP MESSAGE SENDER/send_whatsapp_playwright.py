@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-WhatsApp Message Sender using Playwright - OPTIMIZED VERSION 2.0
+WhatsApp Message Sender using Playwright - OPTIMIZED VERSION 2.1
 Enhanced for speed and reliability with persistent sessions and contact caching
 
 Features:
@@ -12,8 +12,11 @@ Features:
 - Auto-contact name detection
 - Proper image sending (as photo, not sticker)
 
+NOTE: For MCP Playwright (not Python), use browser_file_upload tool instead of 
+setInputFiles() - JavaScript's setInputFiles doesn't work in MCP browser context!
+
 Author: Enhanced by Claude
-Version: 2.0
+Version: 2.1
 """
 
 from playwright.sync_api import sync_playwright, Page, Browser, BrowserContext
