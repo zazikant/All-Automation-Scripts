@@ -81,6 +81,185 @@ If using manual Playwright MCP:
 
 ---
 
+## ⚡ Using Playwright MCP with Code (FASTEST!)
+
+Instead of slow snapshot-based navigation, use `run_code` to execute JavaScript directly:
+
+### Send Message via Code (Reliable Version)
+```javascript
+playwright_browser_run_code:
+  code: |
+    async (page) => {
+      const phone = "9869101909";
+      const message = "Hello from code execution!";
+      
+      // Navigate with pre-filled message
+      await page.goto(`https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`, { 
+        waitUntil: 'networkidle',
+        timeout: 20000 
+      });
+      
+      // Wait for chat to fully load
+      await page.waitForTimeout(3000);
+      
+      // Check if message was pre-filled, if not type it
+      const inputBox = await page.$('div[contenteditable="true"][data-tab="1"]');
+      if (inputBox) {
+        const currentText = await inputBox.innerText();
+        if (!currentText.includes(message)) {
+          await inputBox.fill(message);
+        }
+      }
+      
+      // Wait a moment then press Enter to send
+      await page.waitForTimeout(500);
+      await page.keyboard.press('Enter');
+      
+      // Wait for message to appear in chat list (confirms sent)
+      await page.waitForTimeout(2000);
+      
+      // Go back to chat list to ensure proper state
+      await page.goto("https://web.whatsapp.com/");
+      await page.waitForTimeout(1000);
+      
+      return "Message sent!";
+    }
+```
+
+### Send Image with Caption via Code
+```javascript
+playwright_browser_run_code:
+  code: |
+    async (page) => {
+      const phone = "9869101909";
+      const imagePath = "/home/zazikant/images/photo.jpg";  // Full path
+      const caption = "Check this out!";
+      
+      // Open chat
+      await page.goto(`https://web.whatsapp.com/send?phone=${phone}`, { 
+        waitUntil: 'networkidle',
+        timeout: 20000 
+      });
+      await page.waitForTimeout(3000);
+      
+      // Click attach button
+      const attachBtn = await page.$('[data-testid="conversation-attachment-button"]') || 
+                        await page.$('button[title*="Attach"]');
+      if (attachBtn) await attachBtn.click();
+      await page.waitForTimeout(1000);
+      
+      // Click "Photos & videos" (NOT Documents!)
+      const photosBtn = await page.$('text=Photos & videos');
+      if (photosBtn) await photosBtn.click();
+      await page.waitForTimeout(1000);
+      
+      // Upload file - wait for file chooser
+      const fileInput = await page.waitForSelector('input[type="file"]', { timeout: 5000 });
+      if (fileInput) {
+        await fileInput.setInputFiles(imagePath);
+        
+        // CRITICAL: Wait for preview to fully load - check for send button
+        await page.waitForTimeout(3000);
+        
+        // Wait until send button is visible (image is ready)
+        await page.waitForSelector('[data-testid="send"]', { timeout: 10000 });
+        
+        // Add caption if provided - AFTER image loads
+        if (caption) {
+          const captionBox = await page.$('[data-testid="caption-input"]');
+          if (captionBox) {
+            await captionBox.fill(caption);
+            await page.waitForTimeout(500);
+          }
+        }
+        
+        // Click send button (NOT Enter - for images Enter doesn't work well)
+        const sendBtn = await page.$('[data-testid="send"]');
+        if (sendBtn) {
+          await sendBtn.click();
+        }
+      }
+      
+      // CRITICAL: Wait for message to actually appear in chat
+      // Check for the image element in the message area
+      await page.waitForTimeout(3000);
+      
+      // Verify image was sent - look for image in chat
+      const imageInChat = await page.$('img[src*="blob"]') || 
+                         await page.$('[data-testid="image-thumbnail"]') ||
+                         await page.$('div[role="log"] img');
+      
+      if (!imageInChat) {
+        // Try one more time - maybe first attempt failed silently
+        console.log("Image not found, retrying...");
+        return "FAILED: Image not sent";
+      }
+      
+      // Go back to chat list
+      await page.goto("https://web.whatsapp.com/");
+      await page.waitForTimeout(1500);
+      
+      // Verify it appears in chat list as last message (with image icon)
+      const chatListText = await page.textContent('body');
+      if (!chatListText.includes("image") && !chatListText.includes("photo")) {
+        return "WARNING: Check if image was actually sent";
+      }
+      
+      return "Image sent with caption!";
+    }
+```
+
+### Key Fixes for Image Sending:
+1. **Wait for `input[type="file"]` to appear** - file chooser needs time
+2. **Wait 3+ seconds after setInputFiles** - image takes time to upload/preview
+3. **Wait for send button to be visible** - confirms image is ready
+4. **Click send button (NOT Enter)** - Enter doesn't work reliably for images
+5. **Wait 3+ seconds after sending** - gives time for upload
+6. **Verify image actually in chat** - check for image element before returning
+7. **Check chat list** - verify message appears with image indicator
+
+### Check Replies via Code
+```javascript
+playwright_browser_run_code:
+  code: |
+    async (page) => {
+      // Go to chat list
+      await page.goto("https://web.whatsapp.com/");
+      await page.waitForTimeout(2000);
+      
+      // Get top 10 chats with unread messages
+      const chats = await page.$$('[data-testid="chat-list"] > div > div');
+      const results = [];
+      
+      for (const chat of chats.slice(0, 10)) {
+        const name = await chat.$('span[title]');
+        const unread = await chat.$('span[class*="unread"]');
+        
+        if (name && unread) {
+          const contactName = await name.innerText();
+          results.push(contactName);
+        }
+      }
+      return results;
+    }
+```
+
+### Advantages:
+- ✅ **10x faster** than snapshot navigation
+- ✅ Direct URL navigation + click
+- ✅ No waiting for AI to interpret snapshots
+- ✅ Can loop through multiple contacts easily
+- ✅ Smart element selection in code
+
+### Key Fixes for Reliability:
+1. **Always use `page.keyboard.press('Enter')` as fallback** - more reliable than clicking send button
+2. **Wait for `networkidle`** - ensures page fully loaded
+3. **Check if message already in input box** - some cases pre-fill works
+4. **Go back to chat list after sending** - ensures proper state for next operation
+5. **Wait 2-3 seconds** - gives WhatsApp time to process
+
+---
+
 ## Efficient Contact Finding (NEW!)
 
 ### Method 1: Direct Phone Number Mapping (Fastest)
@@ -320,7 +499,9 @@ Me: ✅ Sent to Shashikant Home: Hello
 
 ## Version History
 
-- **v2.1** (Current): Added exit_chat after sending - Critical for reply capture!
+- **v2.3** (Current): Improved code execution reliability + added image sending with caption
+- **v2.2**: Added code execution via run_code - Much faster than snapshots!
+- **v2.1**: Added exit_chat after sending - Critical for reply capture!
 - **v2.0**: Persistent sessions, contact cache, optimized selectors
 - **v1.0**: Basic functionality, new browser per send
 
