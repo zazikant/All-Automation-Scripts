@@ -26,6 +26,56 @@
 
 ---
 
+## ⚠️ CRITICAL: Capturing ALL Replies Accurately (2026-02-20)
+
+### The Problem:
+- Chat list preview only shows the MOST RECENT message
+- There may be MULTIPLE replies after our sent message
+- Missing any reply = data loss
+
+### The Solution - ALWAYS Do This:
+
+1. **Click on the chat** to open it fully (don't just read from preview)
+2. **Scroll through message history** to find ALL messages after our sent message
+3. **Capture EVERY reply** - list them all out
+4. **Concatenate with " + "** - join multiple replies chronologically
+5. **Verify** - make sure you didn't miss any
+
+### Example:
+```
+Chat list preview shows: "I will look into it"
+BUT when you OPEN the chat, you see:
+  - "Thanks"
+  - "I will look into it"
+
+Correct CSV entry: Thanks + I will look into it
+Wrong CSV entry:   I will look into it  ← MISSED "Thanks"!
+```
+
+### NEVER:
+- ❌ Trust the chat list preview alone
+- ❌ Only capture the most recent reply
+- ❌ Skip opening the chat to verify all replies
+
+### ALWAYS:
+- ✅ Open the chat to see full conversation
+- ✅ Scroll and read ALL messages after our sent message
+- ✅ List every reply in chronological order with " + " separator
+- ✅ Double-check before updating CSV
+
+---
+
+## ⚠️ CRITICAL: Phone Number Format for Searching Contacts
+
+### The Rule:
+When user gives a number like `9869101909` or `8976167591` → Always convert to `+91` prefix:
+- `9869101909` → search for `+919869101909` (or just `9869101909` works too)
+- `8976167591` → search for `+918976167591`
+
+WhatsApp stores contacts with country codes, so adding `+91` (India) makes search faster and more accurate.
+
+---
+
 ## ⚠️ CRITICAL: Initial Setup & Login Verification
 
 ### Step 1: Show Full-Size QR Code for Login
@@ -617,6 +667,37 @@ timestamp,contact,sent_message,reply
 - Use `--auto-name` flag to auto-detect from chat
 - Manually specify: `"+919869101909"` instead of just the number
 
+### Issue: "Message appears typed but doesn't send"
+**Problem:** Using URL pre-fill like `https://web.whatsapp.com/send?phone=...&text=hello` shows the message in the input box but doesn't actually send it.
+
+**Root Cause:**
+1. URL pre-fill only puts text in input box - doesn't auto-send
+2. Initial selector `div[contenteditable="true"][data-tab="1"]` may not work in MCP context
+3. Chat may not be fully opened before typing
+
+**Solution - ALWAYS use this method:**
+```javascript
+// 1. Click on the chat first to open it fully
+await page.click('text=ContactName');
+await page.waitForTimeout(2000);
+
+// 2. Use the correct selector (footer contenteditable)
+const inputBox = await page.$('footer div[contenteditable="true"]');
+if (inputBox) {
+  await inputBox.fill('hello');
+  await page.waitForTimeout(500);
+  await page.keyboard.press('Enter');
+}
+
+// 3. Verify message appears in chat list with timestamp
+```
+
+**Key points:**
+- ✅ Click chat first to fully open it
+- ✅ Use `footer div[contenteditable="true"]` selector (works in MCP)
+- ✅ Always press Enter after filling
+- ✅ Verify message appears in chat list
+
 ---
 
 ## Advanced Usage
@@ -665,35 +746,76 @@ Me: ✅ Sent to Shashikant Home: Hello
 
 ---
 
-## 📋 Quick Reference: Sending Images
+## 📋 Quick Reference: Sending Images (UPDATED 2026-02-20)
 
-### Option 1: Python Script (Easiest)
-```bash
-python send_whatsapp_playwright.py --image "+919869101909" "/path/to/image.jpg" "optional caption"
-```
-The script handles everything automatically.
+### MCP Playwright Method (Manual Steps)
 
-### Option 2: MCP Playwright (Manual)
-1. Navigate to chat
-2. Click attach button (paperclip)
-3. Click "Photos & videos"
-4. **Use `playwright_browser_file_upload` tool** (NOT JavaScript setInputFiles!)
-5. Type caption
-6. Click Send
-7. Press Escape to exit chat
+1. **Navigate to chat** - Open the contact's chat
+2. **Click attach button** (paperclip icon) - ref is usually `e2034` with `button "Attach"`
+3. **Click "Photos & videos"** menu option - wait for menu to appear
+4. **Wait for file chooser** - snapshot shows `[File chooser]: can be handled by browser_file_upload`
+5. **Use `playwright_browser_file_upload` tool** - pass array of file paths:
+   ```json
+   playwright_browser_file_upload:
+     paths: ["/home/shashikantzarekar/safety management.jpg"]
+   ```
+6. **Wait for image preview** - image appears in a preview modal
+7. **Click Send button** - usually ref `e2206` with `button "Send"`
+8. **Wait for send** - message appears in chat with "Pending" then "Delivered"
+9. **Press Escape** to exit chat back to list
 
 ### Why browser_file_upload works:
 - JavaScript's `setInputFiles()` fails silently in MCP browser context
-- Python's `set_input_files()` works (different runtime)
 - The file upload tool properly handles the native file chooser dialog
+- MUST click "Photos & videos" NOT "Document" (otherwise sends as sticker)
+
+### Image Sending Flow (Visual Reference)
+```
+Chat Open → Click Attach (paperclip) → Menu appears → Click "Photos & videos" → 
+[File chooser modal] → playwright_browser_file_upload → Image preview loads → 
+Click Send → Image sent to chat → Escape to exit
+```
+
+---
+
+## 📋 Quick Reference: CSV Updates
+
+### CSV Format
+```
+timestamp,contact,sent_message,reply
+2026-02-20 10:05,Shashikant Home (+919869101909),[Image: safety management.jpg],
+```
+
+### Key Points:
+- No line numbers at start - data starts directly
+- Each row: timestamp,contact,sent_message,reply
+- Images format: `[Image: filename.jpg]`
+- Empty reply = no response yet
+- Multiple replies separated by: ` + `
+
+### To Add New Entry:
+```bash
+# Edit the CSV file directly
+# Append new row at the end (before empty line if any)
+2026-02-20 10:05,Shashikant Home (+919869101909),[Image: safety management.jpg],
+```
+
+### Common Issue - Edit Fails:
+If `edit` tool fails with "oldString not found":
+- Check exact whitespace with `cat -A filename.csv`
+- Copy/paste exact content from bash output
+- Make sure no extra spaces/tabs
 
 ---
 
 ## Version History
 
-- **v2.10** (Current): Made unread check workflow MANDATORY - added prominent warning at top, clarified this is never optional
-- **v2.9** (Current): Added critical login verification steps - ensure full-size QR shown and verify logged-in status before any operation
-- **v2.8** (Current): Simplified unread check workflow - check chat list for unread → filter by CSV → open & capture → update CSV
+- **v2.13** (Current): Added phone number format tip - always add +91 prefix when searching contacts
+- **v2.12** (Current): Added critical section on capturing ALL replies - must open chat, not just read preview, concatenate all replies with " + "
+- **v2.11** (Current): Added clearer image sending workflow with visual flow + CSV update guide
+- **v2.10**: Made unread check workflow MANDATORY - added prominent warning at top, clarified this is never optional
+- **v2.9**: Added critical login verification steps - ensure full-size QR shown and verify logged-in status before any operation
+- **v2.8**: Simplified unread check workflow - check chat list for unread → filter by CSV → open & capture → update CSV
 - **v2.7**: Added critical section - ALWAYS check for unread messages BEFORE sending to any contact (programmatic approach)
 - **v2.6**: Added critical note - capture ALL replies by opening chat, not just from chat list preview
 - **v2.5**: Verified working - use `playwright_browser_file_upload` tool for MCP, Python script uses `set_input_files()`
