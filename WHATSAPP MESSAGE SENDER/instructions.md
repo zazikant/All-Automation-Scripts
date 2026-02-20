@@ -1,4 +1,70 @@
-# WhatsApp Message Sender - Instructions (Enhanced v2.7 - UNREAD CHECK BEFORE SEND)
+# WhatsApp Message Sender - Instructions (Enhanced v2.9 - UNREAD CHECK BEFORE SEND)
+
+## ⚠️ ⚠️ ⚠️ MANDATORY WORKFLOW - NEVER SKIP!
+
+### BEFORE SENDING ANY MESSAGE, YOU MUST:
+
+1. **Read CSV** → Get list of contacts we've sent messages to
+2. **Check chat list** → Look for unread messages from CSV contacts
+3. **Open each chat with unread** → Capture ALL replies
+4. **Concatenate replies** → Join multiple replies with " + "
+5. **Update CSV** → Map replies to correct contact entries
+6. **Exit chat** → Press Escape to go back to chat list
+7. **THEN send** → Proceed with sending new messages
+
+### ⚠️ THIS IS NOT OPTIONAL!
+
+- ❌ NEVER send a message without checking for replies first
+- ❌ NEVER skip the unread check even if "it's just a quick message"
+- ❌ NEVER forget to concatenate multiple replies with " + "
+
+- ✅ ALWAYS check unread from CSV contacts before sending
+- ✅ ALWAYS open chat to capture ALL replies (not just preview)
+- ✅ ALWAYS update CSV with replies before sending new messages
+
+**If you don't follow this workflow, you will miss replies and lose data!**
+
+---
+
+## ⚠️ CRITICAL: Initial Setup & Login Verification
+
+### Step 1: Show Full-Size QR Code for Login
+
+When you need to log in or reconnect:
+1. Navigate to `https://web.whatsapp.com`
+2. Wait for QR code to fully load
+3. **Take a FULL PAGE screenshot** - use `fullPage: true` option to capture the entire QR code
+4. Share the screenshot with user to scan
+
+**Never crop or resize the QR code** - it must be fully visible for scanning.
+
+### Step 2: Verify Login Before Any Operation
+
+**ALWAYS verify you are logged in before sending messages or checking replies:**
+
+1. Take a snapshot after navigation
+2. Look for these indicators of logged-in state:
+   - Chat list is visible
+   - "Chats" button is present
+   - Contact names are visible in chat list
+   
+3. If you see QR code instead of chat list:
+   - **STOP** - Do not proceed with any operations
+   - Take full-page screenshot of QR code
+   - Ask user to scan it
+   - Re-verify login before continuing
+
+### ⚠️ NEVER Proceed Without Verification
+
+- ❌ Don't send messages if QR code is shown
+- ❌ Don't check replies if not logged in
+- ❌ Don't assume session is still valid
+
+- ✅ DO verify login status first
+- ✅ DO wait for chat list to appear
+- ✅ DO proceed only when logged in
+
+---
 
 ## Summary
 
@@ -625,6 +691,8 @@ The script handles everything automatically.
 
 ## Version History
 
+- **v2.10** (Current): Made unread check workflow MANDATORY - added prominent warning at top, clarified this is never optional
+- **v2.9** (Current): Added critical login verification steps - ensure full-size QR shown and verify logged-in status before any operation
 - **v2.8** (Current): Simplified unread check workflow - check chat list for unread → filter by CSV → open & capture → update CSV
 - **v2.7**: Added critical section - ALWAYS check for unread messages BEFORE sending to any contact (programmatic approach)
 - **v2.6**: Added critical note - capture ALL replies by opening chat, not just from chat list preview
