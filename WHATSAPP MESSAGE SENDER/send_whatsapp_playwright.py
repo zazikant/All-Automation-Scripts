@@ -437,6 +437,7 @@ class WhatsAppSender:
         """
         Send messages to multiple contacts with rate limiting.
         Uses single browser session for efficiency.
+        During batch delay, checks for replies from previous messages.
         """
         results = {"success": [], "failed": []}
         
@@ -445,6 +446,11 @@ class WhatsAppSender:
             pos_in_batch = (i % BATCH_SIZE) + 1
             
             print(f"\n[{batch_num}] {pos_in_batch}/{min(BATCH_SIZE, len(phones) - (batch_num-1)*BATCH_SIZE)}: {phone}")
+            
+            # FIRST: Check for any unread replies before sending new message
+            # This catches replies to previous messages that weren't captured yet
+            print("  🔍 Checking for pending replies...")
+            self._check_and_capture_unread_replies(phone)
             
             success, name = self.send_message(phone, message, auto_name=True)
             
@@ -458,8 +464,16 @@ class WhatsAppSender:
                 time.sleep(MESSAGE_DELAY)
             
             if pos_in_batch == BATCH_SIZE and i < len(phones) - 1:
-                print(f"⏳ Batch {batch_num} complete. Waiting {BATCH_DELAY}s...")
-                time.sleep(BATCH_DELAY)
+                print(f"⏳ Batch {batch_num} complete. Waiting {BATCH_DELAY}s... (checking for replies)")
+                
+                # Check for replies during the wait time
+                self._check_replies_during_delay(BATCH_DELAY - 10)
+                
+                time.sleep(10)  # Small buffer
+        
+        # Final reply check after all batches
+        print(f"\n🔍 Final reply check...")
+        self._check_replies_during_delay(15)
         
         print(f"\n{'='*60}")
         print(f"✅ Success: {len(results['success'])}/{len(phones)}")
@@ -467,6 +481,208 @@ class WhatsAppSender:
             print(f"❌ Failed: {results['failed']}")
         
         return results
+    
+    def _check_and_capture_unread_replies(self, phone: str) -> List[Dict]:
+        """
+        Check for unread replies in a specific chat BEFORE sending a new message.
+        This captures any replies that came after previous messages but before
+        the new message we're about to send.
+        """
+        page = self.page
+        if page is None:
+            return []
+        
+        new_replies = []
+        
+        try:
+            # Try to navigate to chat via URL (faster)
+            try:
+                phone_clean = phone.replace("+", "").replace(" ", "")
+                page.goto(f"https://web.whatsapp.com/send?phone={phone_clean}", timeout=10000)
+                time.sleep(2)
+            except:
+                pass
+            
+            # Check for unread messages
+            try:
+                # Look for unread indicator in the chat
+                unreadSelectors = [
+                    'span[class*="message-unread"]',
+                    'span[class*="unread-count"]',
+                    'div[class*="unread"]',
+                    '[data-testid="unread-count"]'
+                ]
+                
+                has_unread = False
+                for sel in unreadSelectors:
+                    if page.locator(sel).count() > 0:
+                        has_unread = True
+                        break
+                
+                if not has_unread:
+                    # Also check if there are any incoming messages at all
+                    msgs = page.locator('[data-testid="msg-container"], div[data-id]').all()
+                    if msgs:
+                        # Check if any messages are incoming (not from us)
+                        for msg in msgs:
+                            is_outgoing = msg.locator('[data-testid="msg-outgoing"], [data-testid="msg-dblcheck"]').count() > 0
+                            if not is_outgoing:
+                                # Found incoming message - check if we have a sent message before it
+                                break
+                    return []
+                
+                # Get contact name
+                try:
+                    header = page.locator('header').first
+                    contact = "Unknown"
+                    if header.locator('span[title]').count() > 0:
+                        contact = header.locator('span[title]').inner_text()
+                except:
+                    contact = phone
+                
+                # Get all messages
+                msgs = page.locator('[data-testid="msg-container"], div[data-id]').all()
+                if not msgs:
+                    return []
+                
+                # Find the last outgoing message
+                last_outgoing_idx = -1
+                for idx, msg in enumerate(msgs):
+                    is_outgoing = msg.locator('[data-testid="msg-outgoing"], [data-testid="msg-dblcheck"]').count() > 0
+                    if is_outgoing:
+                        last_outgoing_idx = idx
+                
+                # Collect all incoming messages after the last outgoing
+                all_replies = []
+                for idx in range(last_outgoing_idx + 1, len(msgs)):
+                    msg = msgs[idx]
+                    is_outgoing = msg.locator('[data-testid="msg-outgoing"], [data-testid="msg-dblcheck"]').count() > 0
+                    if not is_outgoing:
+                        msg_text_el = msg.locator('span[class*="selectable-text"], span.copyable-text').first
+                        if msg_text_el.count() > 0:
+                            reply_text = msg_text_el.inner_text()
+                            if reply_text:
+                                all_replies.append(reply_text)
+                
+                if all_replies:
+                    combined_reply = " + ".join(all_replies)
+                    if update_reply_for_message(contact, combined_reply):
+                        print(f"  📩 Captured reply: {combined_reply[:50]}...")
+                        new_replies.append({"contact": contact, "message": combined_reply})
+            
+            except Exception as e:
+                pass  # Silently continue if check fails
+        
+        except Exception as e:
+            pass
+        
+        return new_replies
+    
+    def _check_replies_during_delay(self, duration: int) -> List[Dict]:
+        """
+        Check for replies from contacts during the delay period.
+        Splits the duration into multiple checks to be responsive.
+        """
+        page = self.page
+        if page is None:
+            return []
+        
+        last_ids = load_last_message_ids()
+        new_replies = []
+        
+        # Split duration into chunks of ~10 seconds each
+        chunk_size = 10
+        chunks = max(1, duration // chunk_size)
+        
+        for _ in range(chunks):
+            try:
+                # Navigate to chat list
+                try:
+                    page.locator('[data-testid="chat-list"]').first.wait_for(timeout=2000)
+                except:
+                    pass
+                
+                chat_rows = page.locator('[data-testid="chat-list"] > div > div').all()
+                
+                for row in chat_rows[:15]:  # Check top 15 chats
+                    try:
+                        # Get contact name
+                        try:
+                            title_el = row.locator('span[title]').first
+                            contact = title_el.inner_text() if title_el.count() > 0 else "Unknown"
+                        except:
+                            continue
+                        
+                        # Skip if we've already processed this contact recently
+                        if contact in last_ids:
+                            continue
+                        
+                        # Check if there are UNREAD messages (new responses)
+                        # Unread indicator is typically a span with message count or "new" text
+                        unread_indicator = row.locator('span[class*="message"], span[class*="unread"], div[class*="unread"]')
+                        
+                        # If no unread indicator, skip this chat (no new messages)
+                        if unread_indicator.count() == 0:
+                            continue
+                        
+                        print(f"📬 {contact} has new messages - checking...")
+                        
+                        # Click to open chat
+                        row.click()
+                        time.sleep(0.8)
+                        
+                        # Get all messages
+                        msgs = page.locator('[data-testid="msg-container"], div[data-id]').all()
+                        if not msgs:
+                            continue
+                        
+                        # Find last outgoing message
+                        last_outgoing_idx = -1
+                        for idx, msg in enumerate(msgs):
+                            is_outgoing = msg.locator('[data-testid="msg-outgoing"], [data-testid="msg-dblcheck"]').count() > 0
+                            if is_outgoing:
+                                last_outgoing_idx = idx
+                        
+                        if last_outgoing_idx == -1:
+                            continue
+                        
+                        # Collect all replies after last outgoing
+                        all_replies = []
+                        for idx in range(last_outgoing_idx + 1, len(msgs)):
+                            msg = msgs[idx]
+                            is_outgoing = msg.locator('[data-testid="msg-outgoing"], [data-testid="msg-dblcheck"]').count() > 0
+                            if not is_outgoing:
+                                msg_text_el = msg.locator('span[class*="selectable-text"], span.copyable-text').first
+                                if msg_text_el.count() > 0:
+                                    reply_text = msg_text_el.inner_text()
+                                    if reply_text:
+                                        all_replies.append(reply_text)
+                        
+                        if all_replies:
+                            combined_reply = " + ".join(all_replies)
+                            msg_id = str(hash(combined_reply))
+                            
+                            if contact not in last_ids or last_ids[contact] != msg_id:
+                                if update_reply_for_message(contact, combined_reply):
+                                    print(f"📩 Reply from {contact}: {combined_reply[:50]}...")
+                                    new_replies.append({"contact": contact, "message": combined_reply})
+                                
+                                last_ids[contact] = msg_id
+                    
+                    except:
+                        continue
+                
+                save_last_message_ids(last_ids)
+                
+            except Exception as e:
+                print(f"⚠️ Error during reply check: {e}")
+            
+            # Small delay between checks
+            time.sleep(chunk_size)
+        
+        if new_replies:
+            print(f"✅ Found {len(new_replies)} replies during batch delay")
+        return new_replies
     
     def check_replies(self) -> List[Dict]:
         """Check for new replies from contacts."""
@@ -491,35 +707,57 @@ class WhatsAppSender:
                     except:
                         continue
                     
-                    # Click to open chat
+                    # Check if there are UNREAD messages (new responses from user)
+                    # Unread indicator is typically a span with message count or "new" text
+                    unread_indicator = row.locator('span[class*="message"], span[class*="unread"], div[class*="unread"]')
+                    
+                    # If no unread indicator, skip this chat (no new messages to read)
+                    if unread_indicator.count() == 0:
+                        continue
+                    
+                    print(f"📬 {contact} has new messages - checking...")
+                    
+                    # Click to open chat (this marks messages as read)
                     row.click()
                     time.sleep(1)
                     
-                    # Get messages
+                    # Get all messages in the chat
                     msgs = page.locator('[data-testid="msg-container"], div[data-id]').all()
                     if not msgs:
                         continue
                     
-                    # Get last message
-                    last_msg = msgs[-1]
-                    msg_id = last_msg.get_attribute('data-id') or str(hash(last_msg.inner_text()))
+                    # Find the last sent message (outgoing) and collect all replies after it
+                    last_outgoing_idx = -1
+                    for i, msg in enumerate(msgs):
+                        is_outgoing = msg.locator('[data-testid="msg-outgoing"], [data-testid="msg-dblcheck"]').count() > 0
+                        if is_outgoing:
+                            last_outgoing_idx = i
                     
-                    # Check if it's incoming (not from us)
-                    is_outgoing = last_msg.locator('[data-testid="msg-outgoing"], [data-testid="msg-dblcheck"]').count() > 0
+                    # Collect all incoming messages after the last outgoing
+                    all_replies = []
+                    for i in range(last_outgoing_idx + 1, len(msgs)):
+                        msg = msgs[i]
+                        is_outgoing = msg.locator('[data-testid="msg-outgoing"], [data-testid="msg-dblcheck"]').count() > 0
+                        if not is_outgoing:
+                            msg_text_el = msg.locator('span[class*="selectable-text"], span.copyable-text').first
+                            if msg_text_el.count() > 0:
+                                reply_text = msg_text_el.inner_text()
+                                if reply_text:
+                                    all_replies.append(reply_text)
                     
-                    if not is_outgoing:
-                        msg_text_el = last_msg.locator('span[class*="selectable-text"], span.copyable-text').first
-                        if msg_text_el.count() > 0:
-                            msg_text = msg_text_el.inner_text()
+                    if all_replies:
+                        # Join all replies with +
+                        combined_reply = " + ".join(all_replies)
+                        msg_id = str(hash(combined_reply))
+                        
+                        # Check if new
+                        if contact not in last_ids or last_ids[contact] != msg_id:
+                            # Update CSV with combined reply
+                            if update_reply_for_message(contact, combined_reply):
+                                print(f"📩 {contact}: {combined_reply[:60]}...")
+                                new_replies.append({"contact": contact, "message": combined_reply})
                             
-                            # Check if new
-                            if contact not in last_ids or last_ids[contact] != msg_id:
-                                # Update CSV
-                                if update_reply_for_message(contact, msg_text):
-                                    print(f"📩 {contact}: {msg_text[:60]}...")
-                                    new_replies.append({"contact": contact, "message": msg_text})
-                                
-                                last_ids[contact] = msg_id
+                            last_ids[contact] = msg_id
                     
                 except Exception as e:
                     continue
@@ -534,16 +772,50 @@ class WhatsAppSender:
 
 
 def log_sent_message(contact: str, message: str, message_type: str = "text"):
-    """Log sent message to CSV."""
+    """
+    Log sent message to CSV.
+    Groups messages by day and contact - multiple messages same day are concatenated with +.
+    """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    date_key = timestamp.split(" ")[0]  # YYYY-MM-DD
     
     if message_type == "image":
         display_msg = f"Image: {message}"
     else:
-        display_msg = message[:200]
+        display_msg = message
     
     file_exists = os.path.exists(MESSAGES_CSV)
     
+    if file_exists:
+        # Read existing rows
+        rows = []
+        with open(MESSAGES_CSV, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            rows = list(reader)
+        
+        # Check if last row is same contact and same day - concatenate with +
+        if rows:
+            last_row = rows[-1]
+            last_date = last_row.get("timestamp", "")[:10]
+            last_contact = last_row.get("contact", "").strip()
+            
+            if last_contact == contact.strip() and last_date == date_key:
+                # Same contact and same day - concatenate messages
+                existing_sent = last_row.get("sent_message", "")
+                new_sent = existing_sent + " + " + display_msg if existing_sent else display_msg
+                rows[-1]["sent_message"] = new_sent
+                rows[-1]["timestamp"] = timestamp  # Update timestamp to latest
+                
+                # Clear the reply since it's now linked to the concatenated message
+                rows[-1]["reply"] = ""
+                
+                with open(MESSAGES_CSV, 'w', newline='', encoding='utf-8') as f:
+                    writer = csv.DictWriter(f, fieldnames=["timestamp", "contact", "sent_message", "reply"])
+                    writer.writeheader()
+                    writer.writerows(rows)
+                return
+    
+    # New row
     with open(MESSAGES_CSV, 'a', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=["timestamp", "contact", "sent_message", "reply"])
         if not file_exists:
@@ -557,7 +829,10 @@ def log_sent_message(contact: str, message: str, message_type: str = "text"):
 
 
 def update_reply_for_message(contact: str, reply_text: str) -> bool:
-    """Update reply column in CSV for the most recent message to this contact."""
+    """
+    Update reply column in CSV for the most recent message to this contact.
+    Multiple replies are concatenated with + until a new message is sent.
+    """
     if not os.path.exists(MESSAGES_CSV):
         return False
     
@@ -567,13 +842,21 @@ def update_reply_for_message(contact: str, reply_text: str) -> bool:
             reader = csv.DictReader(f)
             rows = list(reader)
         
-        # Find last row for this contact with empty reply
+        # Find last row for this contact with empty reply or concatenate to existing reply
         updated = False
         for i in range(len(rows) - 1, -1, -1):
             row = rows[i]
-            if row.get("contact", "").strip() == contact.strip() and not row.get("reply", "").strip():
-                rows[i]["reply"] = reply_text[:500]
-                updated = True
+            if row.get("contact", "").strip() == contact.strip():
+                current_reply = row.get("reply", "").strip()
+                
+                if not current_reply:
+                    # First reply for this message
+                    rows[i]["reply"] = reply_text
+                    updated = True
+                else:
+                    # Concatenate with + (user sent multiple replies without new message)
+                    rows[i]["reply"] = current_reply + " + " + reply_text
+                    updated = True
                 break
         
         if updated:

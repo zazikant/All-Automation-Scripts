@@ -123,6 +123,12 @@ python send_whatsapp_playwright.py "+919869101909" "Hello!"
 python send_whatsapp_playwright.py --batch "p1,p2,p3,p4,p5,p6,p7,p8,p9,p10" "Hello!"
 ```
 
+**What happens during batch send:**
+- Sends messages in batches (default 10 per batch)
+- **During batch delay**: Automatically checks for replies from contacts
+- **After all batches**: Final reply check
+- All sent messages and replies are logged to CSV in real-time
+
 ### 3. Pre-populate Contact Cache
 Edit the `CONTACT_CACHE` dictionary in the script with your frequent contacts.
 
@@ -156,10 +162,46 @@ Always include country code: `+91` for India, `+1` for US, etc.
 
 ### CSV Format (whatsapp_messages.csv)
 
+The CSV captures all sent messages and responses with the following format:
+
 ```
 timestamp,contact,sent_message,reply
-2026-02-19 12:24,Purva (+919820937483),Hello! This is a test message...,Not interested
-2026-02-19 12:27,Purva (+919820937483),Image: safety management.jpg...,Not interested
+2026-02-19 12:24,Purva (+919820937483),Hello! This is a test message from Playwright automation.,Not interested
+```
+
+**Format Rules:**
+- **sent_message**: Multiple messages sent on the same day to the same contact are concatenated with ` + ` separator
+  - Text messages: "Hello" + "How are you?"  
+  - Images/Videos: "safety management.jpg" + "document.pdf"
+  - Mixed: "Hello!" + "Image: photo.jpg" + "document.pdf"
+- **reply**: All user responses received after a sent message (until the next message is sent) are concatenated with ` + ` separator
+  - Example: "Thanks" + "But I need more info" + "Please call me"
+
+**Grouping Logic:**
+- Messages are grouped by: Date + Contact
+- Within each group, all sent messages are concatenated with ` + `
+- Within each message-response pair, all replies are concatenated with ` + `
+- **Only NEW/UNREAD messages** are captured as replies (chat must show unread indicator)
+
+**How Reply Tracking Works:**
+1. **Before each new message**: Checks for any unread replies in that chat first
+2. Opens the chat (marks messages as read)
+3. Collects all messages after our last sent message
+4. Updates CSV with reply
+5. Then sends the new message
+6. **During batch delay**: Checks for replies from other contacts
+
+**This captures:**
+- ✅ Replies to messages sent in previous batches
+- ✅ Replies that came after we sent a message but before we sent the next one
+- ✅ New/unread messages in any chat
+
+**Example Output:**
+```
+timestamp,contact,sent_message,reply
+2026-02-19 11:28,Shashikant Home,safety management.jpg + presentation.pdf,Thanks + Looks good + Call me tomorrow
+2026-02-19 12:24,Purva (+919820937483),Hello! How are you?,Not interested
+2026-02-19 14:30,Jaideep Singh BD GEM,Hello! + Image: brochure.jpg + document.pdf,Got it + Thanks
 ```
 
 ---
@@ -210,9 +252,10 @@ send_with_retry(phone, message, max_retries=3)
 ```
 
 ### Rate Limiting (Built-in)
-- 5 messages per batch
+- 10 messages per batch
 - 3 second delay between messages
 - 120 second delay between batches
+- **During batch delay**: Checks for replies from previous messages
 - Prevents WhatsApp from flagging as spam
 
 ---
