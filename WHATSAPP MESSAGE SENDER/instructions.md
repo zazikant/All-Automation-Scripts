@@ -1,4 +1,4 @@
-# WhatsApp Message Sender - Instructions (Enhanced v2.5 - VERIFIED WORKING)
+# WhatsApp Message Sender - Instructions (Enhanced v2.7 - UNREAD CHECK BEFORE SEND)
 
 ## Summary
 
@@ -43,7 +43,63 @@ python send_whatsapp_playwright.py --keep-alive
 
 ---
 
-## ⚠️ CRITICAL: Exit Chat After Sending
+## ⚠️ CRITICAL: Check Unread Messages FIRST Before Sending to ANY Contact!
+
+**This is the MOST IMPORTANT step - never skip!**
+
+### Why?
+- WhatsApp Web shows unread count in header (e.g., "42 unread messages")
+- Before sending to ANY new contact, you MUST check for unread messages from ALL contacts first
+- This ensures replies are captured BEFORE new messages are sent
+
+### ✅ CORRECT Process (ALWAYS):
+1. **Check for UNREAD messages** - Get all chats with unread indicators
+2. **Map them to CSV** - Capture ALL replies from unread chats
+3. **Then send** - Proceed with sending new messages
+
+### Programmatic Check (MCP Code Execution)
+```javascript
+playwright_browser_run_code:
+  code: |
+    async (page) => {
+      // First: Check for ALL unread chats
+      await page.goto("https://web.whatsapp.com/");
+      await page.waitForTimeout(2000);
+      
+      // Get all chat rows
+      const chatRows = await page.$$('[role="row"]');
+      const unreadChats = [];
+      
+      for (const row of chatRows) {
+        // Check for unread indicator (span with "unread" in class or message count)
+        const unreadBadge = await row.$('span[class*="cx"], span[aria-label*="unread"]');
+        const nameEl = await row.$('span[class*="title"], span[title]');
+        
+        if (unreadBadge && nameEl) {
+          const name = await nameEl.innerText();
+          const unreadText = await unreadBadge.innerText();
+          if (name && unreadText && !isNaN(parseInt(unreadText))) {
+            unreadChats.push(name);
+          }
+        }
+      }
+      
+      return { unreadChats, count: unreadChats.length };
+    }
+```
+
+### Then for EACH unread chat:
+1. Open the chat (this marks messages as read)
+2. Get ALL messages in the chat (not just the preview!)
+3. Find our last sent message
+4. Capture all replies after it
+5. Update CSV
+6. Exit chat
+
+### This replaces context memory!
+- The code programmatically finds all unread chats
+- No need to remember or guess which contacts replied
+- Automatically maps to CSV entries
 
 **This is the MOST IMPORTANT step for capturing replies!**
 
@@ -567,7 +623,8 @@ The script handles everything automatically.
 
 ## Version History
 
-- **v2.6** (Current): Added critical note - capture ALL replies by opening chat, not just from chat list preview
+- **v2.7** (Current): Added critical section - ALWAYS check for unread messages BEFORE sending to any contact (programmatic approach)
+- **v2.6**: Added critical note - capture ALL replies by opening chat, not just from chat list preview
 - **v2.5**: Verified working - use `playwright_browser_file_upload` tool for MCP, Python script uses `set_input_files()`
 - **v2.4**: Added MCP file upload tool for images - THE WORKING METHOD!
 - **v2.3**: Improved code execution reliability + added image sending with caption
