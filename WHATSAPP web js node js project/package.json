@@ -1,0 +1,19 @@
+{
+  "name": "whatsapp-sender",
+  "version": "1.0.0",
+  "description": "WhatsApp automation with whatsapp-web.js and CSV logging",
+  "main": "keep_alive.js",
+  "scripts": {
+    "login": "node keep_alive.js",
+    "send": "node send_text.js",
+    "image": "node send_image.js",
+    "replies": "node check_replies.js"
+  },
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.23.0"
+  }
+}

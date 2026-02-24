@@ -1,0 +1,10 @@
+/**
+ * Example CONTACT_CACHE
+ * Use this to override the display names of specific phone numbers in your logs.
+ */
+const CONTACT_CACHE = {
+  "9876543210": "Test Contact 1",
+  "9123456789": "Test Contact 2",
+};
+
+module.exports = { CONTACT_CACHE };
