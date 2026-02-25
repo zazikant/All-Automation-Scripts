@@ -18,7 +18,7 @@ const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const path = require("path");
 const fs = require("fs");
-const { resolveContactName } = require("./utils/contacts");
+const { resolveContactName, toWaId } = require("./utils/contacts");
 const { logSentMessage } = require("./utils/csv_logger");
 
 // --- Read CLI args ---
@@ -35,7 +35,7 @@ const caption = args[2] || "";
 const fileName = path.basename(imagePath);
 const digits = phone.replace(/\D/g, "");
 const last10 = digits.slice(-10);
-const waId = `91${last10}@c.us`;
+const waId = toWaId(phone);
 
 if (!fs.existsSync(imagePath)) {
     console.error(`❌ File not found: ${imagePath}`);

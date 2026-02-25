@@ -67,61 +67,19 @@ function escapeField(value) {
  */
 async function logSentMessage(phone, contact, message) {
     ensureCsvExists();
-    const rows = await readAllRows();
     const now = getTimestamp();
-    const today = now.split(" ")[0];
     const last10 = (phone || "").replace(/\D/g, "").slice(-10);
 
-    // Check if last row is for same phone on same day
-    let updated = false;
-    if (rows.length > 0) {
-        const lastRow = rows[rows.length - 1];
-        const lastDay = lastRow.timestamp ? lastRow.timestamp.split(" ")[0] : "";
-        const lastPhone = (lastRow.phone || "").replace(/\D/g, "").slice(-10);
-
-        if (
-            lastPhone &&
-            last10 &&
-            lastPhone === last10 &&
-            lastDay === today
-        ) {
-            // Update last row: concatenate message and update timestamp + contact name
-            const existing = lastRow.sent_message || "";
-            lastRow.sent_message = existing ? `${existing} + ${message}` : message;
-            lastRow.timestamp = now;
-            lastRow.contact = contact || lastRow.contact; // refresh display name
-            updated = true;
-        }
-    }
-
-    if (updated) {
-        // Rewrite the entire CSV
-        const lines = [CSV_HEADER.trim()];
-        for (const row of rows) {
-            lines.push(
-                [
-                    escapeField(row.timestamp),
-                    escapeField(row.phone),
-                    escapeField(row.contact),
-                    escapeField(row.sent_message),
-                    escapeField(row.reply),
-                ].join(",")
-            );
-        }
-        fs.writeFileSync(CSV_FILE, lines.join("\n") + "\n", "utf8");
-        console.log(`📝 Updated CSV entry for ${contact} (concatenated)`);
-    } else {
-        // Append a new row
-        const row = [
-            escapeField(now),
-            escapeField(last10),
-            escapeField(contact),
-            escapeField(message),
-            "", // reply
-        ].join(",");
-        fs.appendFileSync(CSV_FILE, row + "\n", "utf8");
-        console.log(`📝 Logged NEW sent message for ${contact}`);
-    }
+    // Always append a new row for every message sent
+    const row = [
+        escapeField(now),
+        escapeField(last10),
+        escapeField(contact),
+        escapeField(message),
+        "", // reply
+    ].join(",");
+    fs.appendFileSync(CSV_FILE, row + "\n", "utf8");
+    console.log(`📝 Logged sent message for ${contact}`);
 }
 
 /**

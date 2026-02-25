@@ -16,7 +16,7 @@
 
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
-const { resolveContactName } = require("./utils/contacts");
+const { resolveContactName, toWaId } = require("./utils/contacts");
 const { logSentMessage } = require("./utils/csv_logger");
 
 // --- Read CLI args ---
@@ -31,7 +31,7 @@ const phone = args[0];
 const message = args[1];
 const digits = phone.replace(/\D/g, "");
 const last10 = digits.slice(-10);
-const waId = `91${last10}@c.us`;
+const waId = toWaId(phone);
 
 console.log(`📱 Preparing to send to ${phone}...`);
 console.log(`💬 Message: ${message}`);

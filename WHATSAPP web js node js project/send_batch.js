@@ -17,7 +17,7 @@ const qrcode = require("qrcode-terminal");
 const fs = require("fs");
 const path = require("path");
 const csv = require("csv-parser");
-const { resolveContactName } = require("./utils/contacts");
+const { resolveContactName, toWaId } = require("./utils/contacts");
 const { logSentMessage } = require("./utils/csv_logger");
 const { runCheckReplies } = require("./check_replies");
 
@@ -99,7 +99,7 @@ async function startBatchProcess() {
                 const { phone, message, image_path, caption } = entry;
                 const digits = phone.replace(/\D/g, "");
                 const last10 = digits.slice(-10);
-                const waId = `91${last10}@c.us`;
+                const waId = toWaId(phone);
 
                 const isImage = image_path && image_path.trim() !== "" && fs.existsSync(image_path);
 

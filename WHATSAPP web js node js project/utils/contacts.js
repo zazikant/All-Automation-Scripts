@@ -41,7 +41,7 @@ function getContactName(phone) {
 async function resolveContactName(client, phone, chats = null) {
   const digits = phone.replace(/\D/g, "");
   const last10 = digits.slice(-10);
-  const waId = `91${last10}@c.us`;
+  const waId = toWaId(phone);
 
   // Step 1: Check manual cache override first
   if (CONTACT_CACHE[last10]) {
@@ -84,15 +84,19 @@ async function resolveContactName(client, phone, chats = null) {
 
 /**
  * Convert phone number to WhatsApp chat ID format.
- * Defaults to India (+91) if no country code.
+ * - If phone starts with '+', it is treated as a full E.164 international number.
+ * - If phone has no '+', it is assumed to be a 10-digit Indian number (+91).
  * @param {string} phone
- * @returns {string} e.g. "919869101909@c.us"
+ * @returns {string} e.g. "919869101909@c.us" or "6737123456@c.us"
  */
 function toWaId(phone) {
-  const digits = phone.replace(/\D/g, "");
-  if (digits.length > 10) {
+  const stripped = (phone || "").trim();
+  const digits = stripped.replace(/\D/g, "");
+  if (stripped.startsWith("+")) {
+    // Full international number provided — trust it completely
     return `${digits}@c.us`;
   }
+  // No '+' — assume Indian 10-digit number
   return `91${digits}@c.us`;
 }
 
