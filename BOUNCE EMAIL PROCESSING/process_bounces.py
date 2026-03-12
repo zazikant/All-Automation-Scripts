@@ -4,6 +4,7 @@ import email
 from email.header import decode_header
 import logging
 import time
+from datetime import datetime
 
 # ---
 # Configuration ---
@@ -14,6 +15,10 @@ IMAP_PASSWORD = "H4ck-y0u"  # Use an App Password
 
 BATCH_SIZE = 5
 STATE_FILE = "last_processed_uid.txt"
+
+# Date filter: Only process emails from March 2026
+START_DATE = datetime(2026, 3, 1)
+END_DATE = datetime(2026, 3, 31)
 # ---
 # End Configuration ---
 
@@ -78,6 +83,13 @@ def fetch_emails():
         else:
             logging.info(f"Searching for emails with UID greater than {last_uid}")
 
+        # Add date filter for March 2026
+        date_filter = f"SINCE {START_DATE.strftime('%d-%b-%Y')} BEFORE {END_DATE.strftime('%d-%b-%Y')}"
+        search_criteria = f"({date_filter})"
+        if last_uid > 0:
+            search_criteria = f"({date_filter} UID {last_uid + 1}:*)"
+        logging.info(f"Searching with criteria: {search_criteria}")
+
         status, messages = mail.uid('search', None, search_criteria)
         if status != "OK":
             logging.error("Failed to search for emails.")
@@ -115,13 +127,43 @@ def fetch_emails():
                 latest_uid = int(uid)
                 continue
 
+            # Check if this is a bounce email (hard or soft)
+            is_bounce = False
+            if "undelivered" in subject.lower() or "mail delivery" in subject.lower() or "returned to sender" in subject.lower():
+                body_lower = body.lower()
+                # Check for hard bounce codes (5xx)
+                has_hard = any(code in body_lower for code in ['550', '5.0.0', '5.1.0', '5.1.1', '5.1.10', '5.4.1', '5.7.1', '5.4.14', '5.1.0'])
+                # Check for soft bounce codes (4xx) - including "downstream server error"
+                has_soft = any(code in body_lower for code in ['421', '450', '451', '452', '4.0.0', '4.2.2', 'downstream'])
+                if has_hard or has_soft:
+                    is_bounce = True
+                    logging.info(f"Found bounce email (Hard:{has_hard} Soft:{has_soft}) with UID {uid.decode()}")
+            
+            if not is_bounce:
+                logging.info(f"Ignoring non-bounce email with UID {uid.decode()}")
+                latest_uid = int(uid)
+                continue
+
             # Get date
             date_tuple = email.utils.parsedate_tz(msg['Date'])
+            email_date = None
             if date_tuple:
                 local_date = email.utils.mktime_tz(date_tuple)
+                email_date = datetime.fromtimestamp(local_date)
                 date_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(local_date))
             else:
                 date_str = "Date not found"
+
+            # Filter: Only process emails from March 2026
+            if email_date:
+                if not (START_DATE <= email_date <= END_DATE):
+                    logging.info(f"Skipping email outside March 2026: {date_str} (UID: {uid.decode()})")
+                    latest_uid = int(uid)
+                    continue
+            else:
+                logging.warning(f"Could not parse date for email with UID {uid.decode()}. Skipping.")
+                latest_uid = int(uid)
+                continue
 
             body = get_email_body(msg)
 
