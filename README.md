@@ -1,3 +1,5 @@
+# FINAL NEWSLETTER AUTOMATION
+
 # Mailster Vision Pipeline
 
 This pipeline automatically converts skeleton layout images into pixel-perfect Mailster HTML templates using a Human-In-The-Loop AI workflow.
