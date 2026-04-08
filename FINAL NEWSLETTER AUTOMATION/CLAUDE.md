@@ -2,7 +2,7 @@
 
 ### Element Identification
 *   **Text Areas:** Black color blocks - Use `<single>` or `<multi>` tags
-*   **Images:** Grey color blocks - Use `<img>` tags with `editable=""` attribute and **MANDATORY** `height="auto"`
+*   **Images:** Grey color blocks - Use `<img>` tags with `editable=""` attribute, **MANDATORY** `height="auto"`, and **MANDATORY** dummy URL: `https://dummy.mailster.co/WIDTHxHEIGHT.jpg` (e.g., `https://dummy.mailster.co/552x150.jpg`)
 *   **Buttons:** Yellow color blocks - Use Mailster `<buttons>` template structure
 
 ### Basic Structure
@@ -75,6 +75,7 @@
   - 4 columns: (552-72)/4 = 120px each
 - **Use `o-fix` class** for nested tables
 - **MANDATORY: All images MUST have `height="auto"`** - Never use fixed heights
+- **MANDATORY: All image placeholders MUST use the format**: `https://dummy.mailster.co/WIDTHxHEIGHT.jpg`
 - **Simple buttons** - Direct `<table class="textbutton">` without complex wrappers
 
 ### Complete Template Structure

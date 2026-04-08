@@ -48,6 +48,7 @@ def main():
         while True:
             print(f"[SYSTEM] Agent, generate the Mailster HTML for Section {idx+1}.")
             print("Type your HTML code below. When done, type 'EOF' on a new line to submit.")
+            print("MANDATORY RULE: All image placeholders MUST follow: https://dummy.mailster.co/WIDTHxHEIGHT.jpg")
             
             lines = []
             while True:
