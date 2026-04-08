@@ -39,9 +39,12 @@
 5. Measure each element separately
 
 ### Spacing
+- **Module separator:** `height="24"`
+- **Section separator:** `height="12"`
+- **Element separator:** `height="8"`
 ```html
 <tr>
-    <td height="12" colspan="3"></td>
+    <td height="8" colspan="3"></td>
 </tr>
 ```
 

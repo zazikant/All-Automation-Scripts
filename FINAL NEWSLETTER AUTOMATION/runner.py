@@ -48,7 +48,10 @@ def main():
         while True:
             print(f"[SYSTEM] Agent, generate the Mailster HTML for Section {idx+1}.")
             print("Type your HTML code below. When done, type 'EOF' on a new line to submit.")
-            print("MANDATORY RULE: All image placeholders MUST follow: https://dummy.mailster.co/WIDTHxHEIGHT.jpg")
+            print("- **MANDATORY: All images MUST have `height=\"auto\"`** - Never use fixed heights")
+            print("- **MANDATORY: All image placeholders MUST use the format**: `https://dummy.mailster.co/WIDTHxHEIGHT.jpg`")
+            print("- **MANDATORY: CSS Resets** - All templates MUST include `margin: 0 !important;` for `h1-h6` and `p/li` tags to prevent browser interference.")
+            print("- **Simple buttons** - Direct `<table class=\"textbutton\">` without complex wrappers")
             
             lines = []
             while True:
@@ -99,6 +102,7 @@ def main():
             h1, h2, h3, h4, h5, h6, table.textbutton a {
                 font-family: Raleway, sans-serif !important;
                 font-weight: 700 !important;
+                margin: 0 !important;
             }
             th, td {
                 font-family: "Open Sans", sans-serif !important;
@@ -106,6 +110,7 @@ def main():
             p, li {
                 font-family: "Georgia", "Times New Roman", Times, serif !important;
                 font-weight: 450 !important;
+                margin: 0 !important;
             }
         }
     </style>
@@ -191,7 +196,7 @@ def main():
                                 <td width="24" class="padd">&zwnj;</td>
                             </tr>
                             <tr>
-                                <td height="24" colspan="3"></td>
+                                <td height="12" colspan="3"></td>
                             </tr>
                         </tbody>
                     </table>
