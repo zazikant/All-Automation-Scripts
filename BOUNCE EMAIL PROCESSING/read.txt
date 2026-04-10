@@ -1,3 +1,0 @@
-You will have to always use gemini api key to work.
-
-give it a nudge by saying only filter mails from 1st Dec onwards (when all mails are not deleted)
