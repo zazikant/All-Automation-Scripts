@@ -1,0 +1,35 @@
+email id of recipient,bounce reason,error code,bounce type,date of bounce email received
+nathan@texarkanaconcrete.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-01 05:25:16
+dhananjay.borse@kotak.com,Policy blocked - review authentication,5.7.1,hard_bounce,2026-04-01 06:26:17
+amalanantk@tataprojects.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-01 06:30:59
+sanjay.bhutani@adani.com,Policy blocked - review authentication,5.7.1,hard_bounce,2026-04-01 06:38:49
+mohammed.samiulla@godrejproperties.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-01 06:45:45
+brparthasarathy@tce.co.in,Check manually,5.1.10,hard_bounce,2026-04-01 07:06:18
+sanjeev.mishra@siemens.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-01 07:28:19
+nilay.manekar@colliers.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-01 07:37:06
+snatarajan@tataprojects.com,Check manually,5.1.10,hard_bounce,2026-04-01 07:40:33
+haresh.amdekar@everyondr.com,Policy blocked - review authentication,5.7.1,hard_bounce,2026-04-01 08:22:07
+aravind.bagali@everyondr.com,Policy blocked - review authentication,5.7.1,hard_bounce,2026-04-01 08:45:56
+madhav.singh@evercloud.in,Policy blocked - review authentication,5.7.1,hard_bounce,2026-04-01 08:46:07
+rupesh.chavan@leighton.co.in,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-01 10:17:39
+tnpdmce@redifmail.com,Connection timeout - retry with backoff,4.4.1,soft_bounce,2026-04-01 12:23:13
+narendra@jaatvedas.com,Connection timeout - retry with backoff,4.4.1,soft_bounce,2026-04-01 16:30:19
+director@vklbuilders.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 05:58:59
+hod_purchase@jindalgroup.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 09:35:24
+vivek.anand@vishvaraj.in,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 09:37:14
+prakash_matai@jindalgroup.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 10:09:51
+pradyumna.gugulothu@flipspaces.in,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 10:39:25
+bhavikpatel5965@gmail.com,Mailbox full - retry later,4.2.2,soft_bounce,2026-04-02 11:42:45
+vinay.kumar@crcgroup.in,Check manually,5.4.14,hard_bounce,2026-04-02 11:42:58
+abhijeet.khobragade@kohinoorpune.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 11:44:56
+abhisheksahu@bluestarindia.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 12:14:47
+yogesh.more@ashwinshethroup.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 12:23:32
+info@roxtechindustries.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 12:25:11
+huangwenhao2@kingfa.com,Bad destination mailbox - remove from list,5.1.1,hard_bounce,2026-04-02 12:28:20
+anurag.ghongade@theamazicgroup.com,Policy blocked - review authentication,5.7.1,hard_bounce,2026-04-02 12:33:34
+mosshhaa@gmail.com,Mailbox full - retry later,4.2.2,soft_bounce,2026-04-02 13:34:46
+adhviksree@gmail.com,Mailbox full - retry later,4.2.2,soft_bounce,2026-04-02 14:15:11
+vikasrathod1777@gmail.com,Mailbox full - retry later,4.2.2,soft_bounce,2026-04-02 15:20:52
+mcgasservices@gmail.com,Mailbox full - retry later,4.2.2,soft_bounce,2026-04-02 15:42:47
+pda.abhishek16@gmail.com,Mailbox full - retry later,4.2.2,soft_bounce,2026-04-02 17:28:55
+sunil.dudwadkar222@gmail.com,Mailbox full - retry later,4.2.2,soft_bounce,2026-04-02 17:34:06
