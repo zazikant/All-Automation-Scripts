@@ -20,9 +20,10 @@ To ensure the AI agent operates strictly within the intended newsletter automati
 
 ### ⚠️ Technical Constraints (CLAUDE.md)
 - **Structure:** Use a single-table layout (one `<tr>` per section).
+- **Hardening:** Every `<td>` MUST have `bgcolor="#ffffff"` and `style="background-color: #ffffff !important;"` to prevent dark mode/forwarding breaks.
 - **Spacers:** Follow the **24/12/8** height hierarchy.
 - **Images:** Always use `height="auto"` and dummy URLs: `https://dummy.mailster.co/WIDTHxHEIGHT.jpg`.
-- **CSS:** Include the "Zero Margin" reset for `h1-h6`, `p`, and `li`.
+- **CSS:** Include the "Zero Margin" reset and Dark Mode overrides in the header.
 - **Buttons:** Use the `<table class="textbutton">` structure.
 
 ---

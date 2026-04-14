@@ -181,34 +181,34 @@ def main():
                             </tr>
 """
     footer = """                            <tr>
-                                <td width="24" class="padd">&zwnj;</td>
-                                <td width="552" valign="top">
-                                    <table cellpadding="0" cellspacing="0" class="o-fix" role="presentation">
+                                <td width="24" class="padd" style="background-color: #ffffff;" bgcolor="#ffffff">&zwnj;</td>
+                                <td width="552" valign="top" style="background-color: #ffffff;" bgcolor="#ffffff">
+                                    <table cellpadding="0" cellspacing="0" class="o-fix" role="presentation" style="background-color: #ffffff;" bgcolor="#ffffff">
                                         <tbody>
                                             <tr>
-                                                <td valign="top" align="left">
+                                                <td valign="top" align="left" style="background-color: #ffffff;" bgcolor="#ffffff">
                                                     <multi label="Body"><p style="font-size: 12px !important; line-height: 1.4em;" data-mce-style="font-size: 12px !important; line-height: 1.4em;">Liked this newsletter? Send it to your colleagues and help us grow. You have received this email because you have subscribed to GEM Engserv as {emailaddress}. If you no longer wish to receive emails please <strong><a href="https://gemengserv.com/gem-newsletter-unsubscribe/" data-mce-href="https://gemengserv.com/gem-newsletter-unsubscribe/">Unsubscribe.</a></strong></p></multi>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </td>
-                                <td width="24" class="padd">&zwnj;</td>
+                                <td width="24" class="padd" style="background-color: #ffffff;" bgcolor="#ffffff">&zwnj;</td>
                             </tr>
                             <tr>
-                                <td height="12" colspan="3"></td>
+                                <td height="12" colspan="3" style="background-color: #ffffff;" bgcolor="#ffffff"></td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <table width="600" cellpadding="0" cellspacing="0" role="presentation" style="background-color: white">
+                    <table width="600" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #ffffff;" bgcolor="#ffffff" class="content-bg">
                         <tbody>
                             <tr>
-                                <td width="600" valign="top" align="left">
-                                    <table cellpadding="0" cellspacing="0" role="presentation">
+                                <td width="600" valign="top" align="left" style="background-color: #ffffff;" bgcolor="#ffffff">
+                                    <table cellpadding="0" cellspacing="0" role="presentation" style="background-color: #ffffff;" bgcolor="#ffffff">
                                         <tbody>
                                             <tr>
-                                                <td width="600" valign="top" align="center"><img src="https://gemengserv.net/sz/wp-content/uploads/mailster/templates/mymail/img/shadow.png" alt="Shadow for Newsletter" width="600" height="25" border="0" style="max-width: 600px; max-height: 25px">
+                                                <td width="600" valign="top" align="center" style="background-color: #ffffff;" bgcolor="#ffffff"><img src="https://gemengserv.net/sz/wp-content/uploads/mailster/templates/mymail/img/shadow.png" alt="Shadow for Newsletter" width="600" height="25" border="0" style="max-width: 600px; max-height: 25px">
                                                 </td>
                                             </tr>
                                         </tbody>

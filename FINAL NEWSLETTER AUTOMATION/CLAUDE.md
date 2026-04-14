@@ -69,6 +69,11 @@
 
 **NEVER use multiple `<module>` tags - Use single table structure!**
 
+### Forwarding & Dark Mode Hardening (MANDATORY)
+- **Background Locking:** Every `<td>` and internal `<table>` MUST have both `bgcolor="#ffffff"` and `style="background-color: #ffffff !important;"`.
+- **Text Locking:** Use `!important` on all inline `color:` styles to prevent Dark Mode inversion.
+- **Body & Wrapper:** The main body and wrapper tables must use the `.body-bg` (`#f3f4f4`) and `.content-bg` (`#ffffff`) classes.
+
 ### Template Structure Rules
 - **Single table structure** - One main table, all sections as `<tr>` rows
 - **Width calculations**: 
