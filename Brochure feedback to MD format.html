@@ -1,139 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Brochure Feedback</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; background: #f4f6f9; color: #1a1a2e; min-height: 100vh; padding: 24px 16px; }
-  h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
-  .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 24px; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brochure Feedback</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  .card { background: #fff; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: #444; letter-spacing: 0.3px; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f4f6f9;
+      color: #1a1a2e;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
 
-  .meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  label { display: block; font-size: 0.78rem; font-weight: 600; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
-  input[type="text"], input[type="date"] {
-    width: 100%; padding: 8px 10px; border: 1.5px solid #e0e0e0; border-radius: 8px;
-    font-size: 0.9rem; outline: none; transition: border-color 0.2s;
-  }
-  input:focus { border-color: #4f46e5; }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
 
-  .page-block { background: #fff; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
-  .page-header { display: flex; align-items: center; gap: 10px; background: #4f46e5; padding: 14px 20px; }
-  .page-number { background: rgba(255,255,255,0.25); color: #fff; font-weight: 700; font-size: 0.8rem; padding: 2px 10px; border-radius: 20px; }
-  .page-name-input {
-    flex: 1; background: transparent; border: none; border-bottom: 1.5px solid rgba(255,255,255,0.5);
-    color: #fff; font-size: 1rem; font-weight: 600; outline: none; padding: 2px 4px;
-  }
-  .page-name-input::placeholder { color: rgba(255,255,255,0.6); }
-  .btn-remove-page { background: rgba(255,255,255,0.15); border: none; color: #fff; cursor: pointer; border-radius: 6px; padding: 4px 10px; font-size: 0.8rem; }
-  .btn-remove-page:hover { background: rgba(255,255,255,0.3); }
+    .subtitle {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 24px;
+    }
 
-  .page-body { padding: 16px 20px 20px; }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
 
-  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: 12px; }
-  thead th { text-align: left; padding: 8px 10px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #888; border-bottom: 2px solid #f0f0f0; }
-  tbody tr { border-bottom: 1px solid #f5f5f5; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody td { padding: 6px 4px; }
-  .cell-input {
-    width: 100%; border: 1.5px solid transparent; border-radius: 6px; padding: 6px 8px;
-    font-size: 0.87rem; font-family: inherit; background: #f8f8fb; outline: none; transition: border-color 0.2s;
-    resize: none; min-height: 36px;
-  }
-  .cell-input:focus { border-color: #4f46e5; background: #fff; }
-  .td-remove { width: 36px; text-align: center; }
-  .btn-remove-row { background: none; border: none; color: #ccc; cursor: pointer; font-size: 1rem; padding: 4px; border-radius: 4px; }
-  .btn-remove-row:hover { color: #ef4444; }
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #444;
+      letter-spacing: 0.3px;
+    }
 
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; transition: background 0.2s, transform 0.1s; }
-  .btn:active { transform: scale(0.97); }
-  .btn-outline { background: #f0f0f5; color: #4f46e5; }
-  .btn-outline:hover { background: #e5e3ff; }
-  .btn-primary { background: #4f46e5; color: #fff; }
-  .btn-primary:hover { background: #4338ca; }
-  .btn-success { background: #16a34a; color: #fff; }
-  .btn-success:hover { background: #15803d; }
-  .btn-danger { background: #ef4444; color: #fff; }
-  .btn-danger:hover { background: #dc2626; }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
 
-  .actions-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
-  .add-row-bar { margin-top: 4px; }
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #888;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
 
-  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+    input[type="text"],
+    input[type="date"] {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
 
-  .preview-box {
-    background: #1e1e2e; color: #a6e3a1; border-radius: 12px; padding: 20px 24px;
-    font-family: 'Courier New', monospace; font-size: 0.82rem; white-space: pre-wrap;
-    max-height: 400px; overflow-y: auto; display: none; margin-top: 20px;
-  }
-  .preview-box.visible { display: block; }
+    input:focus {
+      border-color: #4f46e5;
+    }
 
-  .empty-state { text-align: center; color: #bbb; padding: 40px 20px; font-size: 0.9rem; }
+    .page-block {
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
 
-  @media (max-width: 640px) {
-    .meta-grid { grid-template-columns: 1fr; }
-    table, thead, tbody, th, td, tr { display: block; }
-    thead { display: none; }
-    tbody td { padding: 4px 0; }
-    .cell-input { min-height: 32px; }
-  }
-</style>
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #4f46e5;
+      padding: 14px 20px;
+    }
+
+    .page-number {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+
+    .page-name-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.5);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      outline: none;
+      padding: 2px 4px;
+    }
+
+    .page-name-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-remove-page {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+    }
+
+    .btn-remove-page:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .page-body {
+      padding: 16px 20px 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-bottom: 12px;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody td {
+      padding: 6px 4px;
+    }
+
+    .cell-input {
+      width: 100%;
+      border: 1.5px solid transparent;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 0.87rem;
+      font-family: inherit;
+      background: #f8f8fb;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+      min-height: 36px;
+    }
+
+    .cell-input:focus {
+      border-color: #4f46e5;
+      background: #fff;
+    }
+
+    .td-remove {
+      width: 36px;
+      text-align: center;
+    }
+
+    .btn-remove-row {
+      background: none;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    .btn-remove-row:hover {
+      color: #ef4444;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-outline {
+      background: #f0f0f5;
+      color: #4f46e5;
+    }
+
+    .btn-outline:hover {
+      background: #e5e3ff;
+    }
+
+    .btn-primary {
+      background: #4f46e5;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #4338ca;
+    }
+
+    .btn-success {
+      background: #16a34a;
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background: #15803d;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .actions-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .add-row-bar {
+      margin-top: 4px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .preview-box {
+      background: #1e1e2e;
+      color: #a6e3a1;
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+      margin-top: 20px;
+    }
+
+    .preview-box.visible {
+      display: block;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #bbb;
+      padding: 40px 20px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody td {
+        padding: 4px 0;
+      }
+
+      .cell-input {
+        min-height: 32px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>📋 Brochure Feedback</h1>
-<p class="subtitle">Fill in the details below, add pages and changes, then download as Markdown.</p>
+  <h1>📋 Brochure Feedback</h1>
+  <p class="subtitle">Fill in the details below, add pages and changes, then download as Markdown.</p>
 
-<div class="card">
-  <h2>Meeting Details</h2>
-  <div class="meta-grid">
-    <div>
-      <label>Meeting Date</label>
-      <input type="date" id="meeting-date" />
-    </div>
-    <div>
-      <label>Reviewed By</label>
-      <input type="text" id="reviewed-by" placeholder="e.g. Design Review Team" />
-    </div>
-    <div>
-      <label>Brochure Version</label>
-      <input type="text" id="brochure-version" placeholder="e.g. v1" />
+  <div class="card">
+    <h2>Meeting Details</h2>
+    <div class="meta-grid">
+      <div>
+        <label>Meeting Date</label>
+        <input type="date" id="meeting-date" />
+      </div>
+      <div>
+        <label>Reviewed By</label>
+        <input type="text" id="reviewed-by" placeholder="e.g. Design Review Team" />
+      </div>
+      <div>
+        <label>Brochure Version</label>
+        <input type="text" id="brochure-version" placeholder="e.g. v1" />
+      </div>
     </div>
   </div>
-</div>
 
-<div class="toolbar">
-  <button class="btn btn-primary" onclick="addPage()">+ Add Page</button>
-  <button class="btn btn-outline" onclick="togglePreview()">👁 Preview Markdown</button>
-  <button class="btn btn-success" onclick="downloadMarkdown()">⬇ Download .md</button>
-  <button class="btn btn-outline" onclick="downloadJSON()">⬇ Download .json</button>
-</div>
+  <div class="toolbar">
+    <button class="btn btn-primary" onclick="addPage()">+ Add Page</button>
+    <button class="btn btn-outline" onclick="triggerImport('md')">📂 Import .md</button>
+    <button class="btn btn-outline" onclick="triggerImport('json')">📂 Import .json</button>
+    <button class="btn btn-outline" onclick="togglePreview()">👁 Preview Markdown</button>
+    <button class="btn btn-success" onclick="downloadMarkdown()">⬇ Download .md</button>
+    <button class="btn btn-outline" onclick="downloadJSON()">⬇ Download .json</button>
+  </div>
+  <input type="file" id="md-file-input" accept=".md,.txt" style="display:none" onchange="importMdFile(event)" />
+  <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="importJsonFile(event)" />
 
-<div id="pages-container">
-  <div class="empty-state" id="empty-msg">No pages yet. Click "+ Add Page" to start.</div>
-</div>
+  <div id="pages-container">
+    <div class="empty-state" id="empty-msg">No pages yet. Click "+ Add Page" to start.</div>
+  </div>
 
-<div class="preview-box" id="preview-box"></div>
+  <div class="preview-box" id="preview-box"></div>
 
-<script>
-  let pageCount = 0;
+  <script>
+    let pageCount = 0;
 
-  // Set today's date by default
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('meeting-date').value = today;
+    // Set today's date by default
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('meeting-date').value = today;
 
-  function addPage() {
-    pageCount++;
-    document.getElementById('empty-msg').style.display = 'none';
+    function addPage() {
+      pageCount++;
+      document.getElementById('empty-msg').style.display = 'none';
 
-    const div = document.createElement('div');
-    div.className = 'page-block';
-    div.id = `page-${pageCount}`;
-    div.innerHTML = `
+      const div = document.createElement('div');
+      div.className = 'page-block';
+      div.id = `page-${pageCount}`;
+      div.innerHTML = `
       <div class="page-header">
         <span class="page-number">Page ${pageCount}</span>
         <input class="page-name-input" placeholder="Page name (e.g. Cover Page)" />
@@ -157,134 +410,343 @@
         </div>
       </div>
     `;
-    document.getElementById('pages-container').appendChild(div);
-    addRow(pageCount);
-  }
+      document.getElementById('pages-container').appendChild(div);
+      addRow(pageCount);
+    }
 
-  function addRow(pageId) {
-    const tbody = document.getElementById(`rows-${pageId}`);
-    const rowId = Date.now();
-    const tr = document.createElement('tr');
-    tr.id = `row-${rowId}`;
-    tr.innerHTML = `
+    function addRow(pageId) {
+      const tbody = document.getElementById(`rows-${pageId}`);
+      const rowId = Date.now();
+      const tr = document.createElement('tr');
+      tr.id = `row-${rowId}`;
+      tr.innerHTML = `
       <td><textarea class="cell-input" placeholder="e.g. Main Headline" rows="1" oninput="autoResize(this)"></textarea></td>
       <td><textarea class="cell-input" placeholder="e.g. Welcome to Our Company" rows="1" oninput="autoResize(this)"></textarea></td>
       <td><textarea class="cell-input" placeholder="e.g. Transforming Businesses..." rows="1" oninput="autoResize(this)"></textarea></td>
       <td class="td-remove"><button class="btn-remove-row" onclick="removeRow('row-${rowId}')">✕</button></td>
     `;
-    tbody.appendChild(tr);
-  }
-
-  function removeRow(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-  }
-
-  function removePage(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-    if (document.querySelectorAll('.page-block').length === 0) {
-      document.getElementById('empty-msg').style.display = '';
+      tbody.appendChild(tr);
     }
-  }
 
-  function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
-  }
+    function removeRow(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
 
-  function collectData() {
-    const date = document.getElementById('meeting-date').value;
-    const reviewedBy = document.getElementById('reviewed-by').value.trim() || 'Not specified';
-    const version = document.getElementById('brochure-version').value.trim() || 'v1';
+    function removePage(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+      if (document.querySelectorAll('.page-block').length === 0) {
+        document.getElementById('empty-msg').style.display = '';
+      }
+    }
 
-    const pages = [];
-    document.querySelectorAll('.page-block').forEach((block, i) => {
-      const pageName = block.querySelector('.page-name-input').value.trim() || `Page ${i + 1}`;
-      const changes = [];
-      block.querySelectorAll('tbody tr').forEach(row => {
-        const cells = row.querySelectorAll('textarea');
-        if (cells.length >= 3) {
-          const element = cells[0].value.trim();
-          const current = cells[1].value.trim();
-          const changeTo = cells[2].value.trim();
-          if (element || current || changeTo) {
-            changes.push({ element, current, change_to: changeTo });
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+
+    function collectData() {
+      const date = document.getElementById('meeting-date').value;
+      const reviewedBy = document.getElementById('reviewed-by').value.trim() || 'Not specified';
+      const version = document.getElementById('brochure-version').value.trim() || 'v1';
+
+      const pages = [];
+      document.querySelectorAll('.page-block').forEach((block, i) => {
+        const pageName = block.querySelector('.page-name-input').value.trim() || `Page ${i + 1}`;
+        const changes = [];
+        block.querySelectorAll('tbody tr').forEach(row => {
+          const cells = row.querySelectorAll('textarea');
+          if (cells.length >= 3) {
+            const element = cells[0].value.trim();
+            const current = cells[1].value.trim();
+            const changeTo = cells[2].value.trim();
+            if (element || current || changeTo) {
+              changes.push({ element, current, change_to: changeTo });
+            }
           }
+        });
+        pages.push({ page: i + 1, name: pageName, changes });
+      });
+
+      return { date, reviewedBy, version, pages };
+    }
+
+    function generateMarkdown() {
+      const { date, reviewedBy, version, pages } = collectData();
+
+      let md = `# Brochure Feedback\n`;
+      md += `**Meeting Date:** ${date}\n`;
+      md += `**Reviewed By:** ${reviewedBy}\n`;
+      md += `**Brochure Version:** ${version}\n\n`;
+      md += `---\n\n`;
+
+      pages.forEach(p => {
+        md += `## Page ${p.page} — ${p.name}\n\n`;
+        md += `| Element | Current | Change To |\n`;
+        md += `|---|---|---|\n`;
+        if (p.changes.length === 0) {
+          md += `| — | — | — |\n`;
+        } else {
+          p.changes.forEach(c => {
+            const el = c.element || '—';
+            const cur = c.current || '—';
+            const chg = c.change_to || '—';
+            md += `| ${el} | ${cur} | ${chg} |\n`;
+          });
+        }
+        md += `\n---\n\n`;
+      });
+
+      return md;
+    }
+
+    function generateJSON() {
+      const { date, reviewedBy, version, pages } = collectData();
+      return JSON.stringify({
+        brochure_feedback: {
+          meeting_date: date,
+          reviewed_by: reviewedBy,
+          brochure_version: version,
+          pages
+        }
+      }, null, 2);
+    }
+
+    function togglePreview() {
+      const box = document.getElementById('preview-box');
+      box.textContent = generateMarkdown();
+      box.classList.toggle('visible');
+    }
+
+    function downloadMarkdown() {
+      const md = generateMarkdown();
+      const date = document.getElementById('meeting-date').value || 'feedback';
+      download(`brochure-feedback-${date}.md`, md, 'text/markdown');
+    }
+
+    function downloadJSON() {
+      const json = generateJSON();
+      const date = document.getElementById('meeting-date').value || 'feedback';
+      download(`brochure-feedback-${date}.json`, json, 'application/json');
+    }
+
+    function download(filename, content, mime) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function triggerImport(type) {
+      const id = type === 'json' ? 'json-file-input' : 'md-file-input';
+      document.getElementById(id).value = '';
+      document.getElementById(id).click();
+    }
+
+    function importMdFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => parseAndLoad(e.target.result);
+      reader.readAsText(file);
+    }
+
+    function importJsonFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          parseAndLoadJSON(data);
+        } catch {
+          alert('Could not read the JSON file. Make sure it was exported from this tool.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function parseAndLoadJSON(data) {
+      const fb = data.brochure_feedback || data;
+      if (!fb) { alert('Unrecognised JSON structure.'); return; }
+
+      // Fill meta
+      if (fb.meeting_date) document.getElementById('meeting-date').value = fb.meeting_date;
+      if (fb.reviewed_by) document.getElementById('reviewed-by').value = fb.reviewed_by;
+      if (fb.brochure_version) document.getElementById('brochure-version').value = fb.brochure_version;
+
+      // Clear existing pages
+      const container = document.getElementById('pages-container');
+      container.querySelectorAll('.page-block').forEach(el => el.remove());
+      pageCount = 0;
+
+      const pages = fb.pages || [];
+      pages.forEach((p, i) => {
+        pageCount++;
+        document.getElementById('empty-msg').style.display = 'none';
+
+        const div = document.createElement('div');
+        div.className = 'page-block';
+        div.id = `page-${pageCount}`;
+        const pageName = (p.name || `Page ${i + 1}`).replace(/"/g, '&quot;');
+        div.innerHTML = `
+        <div class="page-header">
+          <span class="page-number">Page ${pageCount}</span>
+          <input class="page-name-input" placeholder="Page name" value="${pageName}" />
+          <button class="btn-remove-page" onclick="removePage('page-${pageCount}')">✕ Remove</button>
+        </div>
+        <div class="page-body">
+          <table>
+            <thead><tr><th>Element</th><th>Current</th><th>Change To</th><th></th></tr></thead>
+            <tbody id="rows-${pageCount}"></tbody>
+          </table>
+          <div class="add-row-bar">
+            <button class="btn btn-outline" onclick="addRow(${pageCount})">+ Add Row</button>
+          </div>
+        </div>
+      `;
+        container.appendChild(div);
+
+        const pid = pageCount;
+        const changes = p.changes || [];
+
+        if (changes.length === 0) {
+          addRow(pid);
+        } else {
+          changes.forEach(c => {
+            const tbody = document.getElementById(`rows-${pid}`);
+            const rowId = Date.now() + Math.random();
+            const tr = document.createElement('tr');
+            tr.id = `row-${rowId}`;
+            tr.innerHTML = `
+            <td><textarea class="cell-input" rows="1" oninput="autoResize(this)">${escHtml(c.element || '')}</textarea></td>
+            <td><textarea class="cell-input" rows="1" oninput="autoResize(this)">${escHtml(c.current || '')}</textarea></td>
+            <td><textarea class="cell-input" rows="1" oninput="autoResize(this)">${escHtml(c.change_to || '')}</textarea></td>
+            <td class="td-remove"><button class="btn-remove-row" onclick="removeRow('row-${rowId}')">✕</button></td>
+          `;
+            tbody.appendChild(tr);
+          });
         }
       });
-      pages.push({ page: i + 1, name: pageName, changes });
-    });
 
-    return { date, reviewedBy, version, pages };
-  }
+      setTimeout(() => document.querySelectorAll('.cell-input').forEach(autoResize), 50);
+      if (document.querySelectorAll('.page-block').length === 0) {
+        document.getElementById('empty-msg').style.display = '';
+      }
+    }
 
-  function generateMarkdown() {
-    const { date, reviewedBy, version, pages } = collectData();
+    function parseAndLoad(md) {
+      // --- Extract meta fields ---
+      const dateMatch = md.match(/\*\*Meeting Date:\*\*\s*([^\n]+)/);
+      const reviewedByMatch = md.match(/\*\*Reviewed By:\*\*\s*([^\n]+)/);
+      const versionMatch = md.match(/\*\*Brochure Version:\*\*\s*([^\n]+)/);
 
-    let md = `# Brochure Feedback\n`;
-    md += `**Meeting Date:** ${date}\n`;
-    md += `**Reviewed By:** ${reviewedBy}\n`;
-    md += `**Brochure Version:** ${version}\n\n`;
-    md += `---\n\n`;
+      if (dateMatch) document.getElementById('meeting-date').value = dateMatch[1].trim();
+      if (reviewedByMatch) document.getElementById('reviewed-by').value = reviewedByMatch[1].trim();
+      if (versionMatch) document.getElementById('brochure-version').value = versionMatch[1].trim();
 
-    pages.forEach(p => {
-      md += `## Page ${p.page} — ${p.name}\n\n`;
-      md += `| Element | Current | Change To |\n`;
-      md += `|---|---|---|\n`;
-      if (p.changes.length === 0) {
-        md += `| — | — | — |\n`;
-      } else {
-        p.changes.forEach(c => {
-          const el = c.element || '—';
-          const cur = c.current || '—';
-          const chg = c.change_to || '—';
-          md += `| ${el} | ${cur} | ${chg} |\n`;
+      // --- Clear existing pages ---
+      const container = document.getElementById('pages-container');
+      container.querySelectorAll('.page-block').forEach(el => el.remove());
+      pageCount = 0;
+
+      // --- Split into page sections ---
+      const pageSections = md.split(/^## Page \d+\s*[—-]\s*/m).slice(1);
+
+      pageSections.forEach(section => {
+        const lines = section.split('\n');
+        const pageName = lines[0].trim();
+
+        pageCount++;
+        document.getElementById('empty-msg').style.display = 'none';
+
+        const div = document.createElement('div');
+        div.className = 'page-block';
+        div.id = `page-${pageCount}`;
+        div.innerHTML = `
+        <div class="page-header">
+          <span class="page-number">Page ${pageCount}</span>
+          <input class="page-name-input" placeholder="Page name (e.g. Cover Page)" value="${pageName.replace(/"/g, '&quot;')}" />
+          <button class="btn-remove-page" onclick="removePage('page-${pageCount}')">✕ Remove</button>
+        </div>
+        <div class="page-body">
+          <table>
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Current</th>
+                <th>Change To</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="rows-${pageCount}">
+            </tbody>
+          </table>
+          <div class="add-row-bar">
+            <button class="btn btn-outline" onclick="addRow(${pageCount})">+ Add Row</button>
+          </div>
+        </div>
+      `;
+        container.appendChild(div);
+
+        const pid = pageCount;
+
+        // --- Parse table rows ---
+        let inTable = false;
+        let headerSkipped = false;
+        lines.forEach(line => {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith('|')) { inTable = false; headerSkipped = false; return; }
+          inTable = true;
+
+          // Skip separator row like |---|---|---|
+          if (/^\|[\s\-:|]+\|/.test(trimmed)) return;
+
+          const cols = trimmed.split('|').map(c => c.trim()).filter((_, i, a) => i > 0 && i < a.length - 1);
+          if (cols.length < 3) return;
+
+          const [element, current, changeTo] = cols;
+
+          // Skip the header row
+          if (element.toLowerCase() === 'element' && current.toLowerCase() === 'current') return;
+          // Skip empty/placeholder rows
+          if (element === '—' && current === '—' && changeTo === '—') return;
+
+          const tbody = document.getElementById(`rows-${pid}`);
+          const rowId = Date.now() + Math.random();
+          const tr = document.createElement('tr');
+          tr.id = `row-${rowId}`;
+          tr.innerHTML = `
+          <td><textarea class="cell-input" rows="1" oninput="autoResize(this)">${escHtml(element)}</textarea></td>
+          <td><textarea class="cell-input" rows="1" oninput="autoResize(this)">${escHtml(current)}</textarea></td>
+          <td><textarea class="cell-input" rows="1" oninput="autoResize(this)">${escHtml(changeTo)}</textarea></td>
+          <td class="td-remove"><button class="btn-remove-row" onclick="removeRow('row-${rowId}')">✕</button></td>
+        `;
+          tbody.appendChild(tr);
         });
+
+        // If no rows parsed, add one blank row
+        if (!document.getElementById(`rows-${pid}`).hasChildNodes()) {
+          addRow(pid);
+        }
+      });
+
+      // Auto-resize all textareas
+      setTimeout(() => {
+        document.querySelectorAll('.cell-input').forEach(autoResize);
+      }, 50);
+
+      if (document.querySelectorAll('.page-block').length === 0) {
+        document.getElementById('empty-msg').style.display = '';
       }
-      md += `\n---\n\n`;
-    });
+    }
 
-    return md;
-  }
-
-  function generateJSON() {
-    const { date, reviewedBy, version, pages } = collectData();
-    return JSON.stringify({
-      brochure_feedback: {
-        meeting_date: date,
-        reviewed_by: reviewedBy,
-        brochure_version: version,
-        pages
-      }
-    }, null, 2);
-  }
-
-  function togglePreview() {
-    const box = document.getElementById('preview-box');
-    box.textContent = generateMarkdown();
-    box.classList.toggle('visible');
-  }
-
-  function downloadMarkdown() {
-    const md = generateMarkdown();
-    const date = document.getElementById('meeting-date').value || 'feedback';
-    download(`brochure-feedback-${date}.md`, md, 'text/markdown');
-  }
-
-  function downloadJSON() {
-    const json = generateJSON();
-    const date = document.getElementById('meeting-date').value || 'feedback';
-    download(`brochure-feedback-${date}.json`, json, 'application/json');
-  }
-
-  function download(filename, content, mime) {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([content], { type: mime }));
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-</script>
+    function escHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
 </body>
+
 </html>
