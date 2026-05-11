@@ -12,7 +12,7 @@ from datetime import datetime
 from dataclasses import dataclass
 from typing import Optional
 
-OUTPUT_DIR = "/home/zazikant/All-Automation-Scripts/BOUNCE EMAIL PROCESSING/output"
+OUTPUT_DIR = "D:\\test\\All-Automation-Scripts\\BOUNCE EMAIL PROCESSING\\output"
 BATCH_COUNTER_FILE = os.path.join(OUTPUT_DIR, "batch_counter.txt")
 
 def get_batch_number():
@@ -53,8 +53,8 @@ IMAP_PASSWORD = "H4ck-y0u"
 BATCH_SIZE = 5
 STATE_FILE = "last_processed_uid.txt"
 
-START_DATE = datetime(2026, 4, 1)
-END_DATE = datetime(2026, 4, 30)
+START_DATE = datetime(2026, 5, 1)
+END_DATE = datetime(2026, 5, 31)
 # ---
 # End Configuration ---
 
@@ -393,7 +393,11 @@ def fetch_emails():
                 print(f"---BOUNCE_TYPE---{classify_bounce(rfc_status)}")
                 print(f"---BOUNCE_DESCRIPTION---{get_status_description(rfc_status)}")
                 print(f"---RECIPIENT---{recipient}")
-                print(body)
+                try:
+                    safe_body = body.encode('utf-8', errors='replace').decode('utf-8', errors='replace')
+                    print(safe_body)
+                except Exception as e:
+                    logging.warning(f"Could not print body for UID {uid.decode()}: {e}")
 
                 processed_count += 1
                 latest_uid = int(uid)

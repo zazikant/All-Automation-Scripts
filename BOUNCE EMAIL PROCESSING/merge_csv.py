@@ -4,7 +4,7 @@ import glob
 
 # ---
 # Configuration ---
-OUTPUT_DIR = "/home/zazikant/All-Automation-Scripts/BOUNCE EMAIL PROCESSING/output"
+OUTPUT_DIR = "D:\\test\\All-Automation-Scripts\\BOUNCE EMAIL PROCESSING\\output"
 MERGED_FILE = os.path.join(OUTPUT_DIR, "merged_results.csv")
 FILE_PATTERN = os.path.join(OUTPUT_DIR, "batch_*_results.csv")
 # ---

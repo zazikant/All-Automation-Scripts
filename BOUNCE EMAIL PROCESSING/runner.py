@@ -6,7 +6,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # The worker script that fetches emails
-worker_script = "/home/zazikant/process_bounces.py"
+worker_script = "D:\\test\\All-Automation-Scripts\\BOUNCE EMAIL PROCESSING\\process_bounces_v2.py"
 
 logging.info("Executing worker script for a single batch.")
 
