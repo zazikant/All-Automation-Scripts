@@ -1,7 +1,42 @@
+Step 1: Get CSV into Google Sheets [2 min]
+Go to https://sheets.google.com
+File → Import → Upload → drag your Search keyword report.csv
+Import settings:
+Separator type: Detect automatically
+Convert text to numbers, dates, and formulas: Yes
+Important: 
+1. **Delete the first 2 rows Google Ads adds as junk headers, so row 1 = Keywordstatus, Keyword, Matchtype...**
+2**. Delete the last unnecessary rows of totals**
 
-Inside data studio (shashikantzarekar@gmail.com) , TO change the "source" of data in Big Query, go to Page > Current Page settings > on right select data source.
+Step 2: Connect Looker Studio to that Sheet
+Go to https://lookerstudio.google.com
+Create → Report
+Add data → Google Sheets → pick your uploaded sheet
+Select the worksheet + check Use first row as headers
+Add → Add to report
 
---------------------- *** FOR KEYWORD data to big query (have filter on "keywords" and put efforts to analyse performance) *** ----------------------
+Step 3: Fix data types in Looker Studio
+Looker Studio will import everything as Text. Change these:
+
+Go to PAGE -> Page settings (to change the data type / manage data)
+
+Field	Change to
+Cost	Currency USD
+Clicks, Impr, Conversions	Number
+Convrate, Interactionrate	Percent
+MaxCPC, AvgCPC1, Avgcost	Currency USD
+
+** In manage data -> For Avg fields.. "Default Aggregation" change to Average instead of SUM **
+
+2 different reports are made with individual csv for "search terms report" and "search keyword report"
+
+
+# == Below method is for biq query above method is for csv ==
+
+Inside **data studio** (==shashikantzarekar@gmail.com==) , TO change the "source" of data in Big Query, go to Page > Current Page settings > on right select data source.
+
+--------------------- *** FOR KEYWORD data to big query (have filter on "keywords" and put efforts to analyse performance) *** ---------------
+
 // Use gemini cli (shashikantzarekar@gmail.com  gcloud projects list and gcloud config set project feisty-outrider-471302-k6) and do this: Upload google ads keywords csv data to big query to create table
 
 bq load \
@@ -12,7 +47,7 @@ bq load \
     Keyword_status:STRING,Keyword:STRING,Match_type:STRING,Campaign:STRING,Ad_group:STRING,Status:STRING,Status_reasons:STRING,Currency_code:STRING,Max_CPC:STRING,Final_URL:STRING,Avg_CPM:STRING,Interactions:STRING,Interaction_rate:STRING,Avg_cost:STRING,Cost:STRING,Impr:STRING,Clicks:STRING,Conv_rate:STRING,Conversions:STRING,Avg_CPC_1:STRING,Cost_per_conv:STRING
 
 
-// Google Ads Conversion of numberic data to Numerics (Same query to paste in data studio > big query > custom query)
+// Google Ads Conversion of numberic data to Numerics (Same query to paste in data studio> big query > custom query)
 
 SELECT
   * EXCEPT (
@@ -56,9 +91,9 @@ TO remove previous data source, go to Resource - Manage added data sources - rem
 ----------------------
 
 
---------------------- *** FOR Search terms data to big query (have filter of "search term" and do efforts to find right keywords) *** ----------------------
+*** FOR Search terms data to big query (have filter of "search term" and do efforts to find right keywords) ***
 
-// go to shell.cloud.google.com and click on top right `>_`.  Then upload csv in explorer. Then do gcloud auth login in shell. Then paste this line to create table.
+// go to [shell.cloud.google.com](shell.cloud.google.com) and click on top right `>_`.  Then upload csv in explorer. Then do gcloud auth login in shell. Then paste this line to create table.
 
 bq load \
     --source_format=CSV \
@@ -95,7 +130,6 @@ FROM
   `feisty-outrider-471302-k6.advanced_csv_analysis.search_terms_report`
 
 ----------------------
-
 
 
 
