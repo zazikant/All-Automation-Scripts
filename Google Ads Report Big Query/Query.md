@@ -1,5 +1,5 @@
 
-Inside looker studio (shashikantzarekar@gmail.com) , TO change the "source" of data in Big Query, go to Page > Current Page settings > on right select data source.
+Inside data studio (shashikantzarekar@gmail.com) , TO change the "source" of data in Big Query, go to Page > Current Page settings > on right select data source.
 
 --------------------- *** FOR KEYWORD data to big query (have filter on "keywords" and put efforts to analyse performance) *** ----------------------
 // Use gemini cli (shashikantzarekar@gmail.com  gcloud projects list and gcloud config set project feisty-outrider-471302-k6) and do this: Upload google ads keywords csv data to big query to create table
@@ -12,7 +12,7 @@ bq load \
     Keyword_status:STRING,Keyword:STRING,Match_type:STRING,Campaign:STRING,Ad_group:STRING,Status:STRING,Status_reasons:STRING,Currency_code:STRING,Max_CPC:STRING,Final_URL:STRING,Avg_CPM:STRING,Interactions:STRING,Interaction_rate:STRING,Avg_cost:STRING,Cost:STRING,Impr:STRING,Clicks:STRING,Conv_rate:STRING,Conversions:STRING,Avg_CPC_1:STRING,Cost_per_conv:STRING
 
 
-// Google Ads Conversion of numberic data to Numerics (Same query to paste in looker studio > big query > custom query)
+// Google Ads Conversion of numberic data to Numerics (Same query to paste in data studio > big query > custom query)
 
 SELECT
   * EXCEPT (
@@ -68,7 +68,7 @@ bq load \
     Search_term:STRING,Match_type:STRING,Added_Excluded:STRING,Campaign:STRING,Ad_group:STRING,Keyword:STRING,Currency_code:STRING,Avg_CPM:STRING,Impr:STRING,Interactions:STRING,Interaction_rate:STRING,Avg_cost:STRING,Cost:STRING,Campaign_type:STRING,Conv_rate:STRING,Conversions:STRING,Cost_per_conv:STRING
 
 
-// Google Ads Conversion of numberic data to Numerics (Same query to paste in looker studio > big query > custom query)
+// Google Ads Conversion of numberic data to Numerics (Same query to paste in data studio > big query > custom query)
 
 SELECT
   -- Text Dimensions
